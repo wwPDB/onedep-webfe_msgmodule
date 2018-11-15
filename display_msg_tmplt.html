@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Msg: %(pdb_id)s / %(identifier)s / %(message_subject)s</title>
+
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/oneColLiqCtrHdr.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/jquery.dataTables.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/jquery.dataTables.wwpdb.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/dataTables.colReorder-1.1.3.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/themes/custom/jquery-ui-1.10.3.custom.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/themes/custom/jquery-ui-1.10.3.custom.wwpdb.css" />
+
+<style type="text/css">
+/* Accommodating style specifications here for DEV purposes, but should be incorporated into appropriate parent stylesheets */
+
+/* For jQuery UI - modal dialog form styling --------------------*/
+label, input { display:block; }
+input.text { margin-bottom:12px; width:95%%; padding: 0.4em; }
+fieldset { padding:0; border:0; margin-top:25px; }
+.topcaption { border: 1px solid transparent; padding: 0.3em; }
+.ui-dialog .ui-state-error { padding: 0.3em; }
+
+.ui-menu { z-index: 100; }
+#context_menu { position:absolute; display:none; }
+
+#loading{
+        display:none;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        background:rgba(255,255,255,0.8);
+        z-index:1000;
+}
+#loadingcontent{
+        display:table;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        z-index:1200;
+}
+#loadingspinner{
+        display: table-cell;
+        vertical-align:middle;
+        width: 100%%;
+        text-align: center;
+        font-size:larger;
+        padding-top:80px;
+        z-index:1200;
+}
+</style>
+
+
+<script type="text/javascript">
+	var SESSION_ID = '%(sessionid)s';
+	var DEPID     = '%(identifier)s';
+        var DISPLAYID = '%(display_identifier)s';
+	var PDBID     = '%(pdb_id)s';
+	var SESS_PATH_PREFIX = '%(session_url_prefix)s';
+	var FILE_SOURCE = '%(filesource)s';
+	var INSTANCE = '%(instance)s';
+	var CONTENT_TYPE = '%(content_type)s';
+	var EMBEDDED_VW = false;
+	var MSGID = '%(message_id)s';
+	var MSGS_HWM = %(msgs_high_watermark)s;
+	var NOTES_HWM = %(notes_high_watermark)s;
+	//var AUTO_CHECK_ALL_FILE_REFS = '%%(auto_check_all)s';
+</script>
+<script type="text/javascript" src="/js/jquery-2.1.3/core/jquery-2.1.3.js"></script>
+<!-- <script type="text/javascript" src="/js/jquery-migrate/jquery-migrate-1.2.1.js"></script> -->
+<script type="text/javascript" src="/msgmodule/js/msging-dsply-msg.min.js?v=20141204"></script>
+</head>
+<body class="oneColLiqCtrHdr">
+<div id="container">
+<!-- begin #header-->
+	<div id="header">
+    	<div id="logo"><img src="/images/wwpdb_logo.gif" width="187" height="58" alt="logo" /> </div>
+    	<div id="headerCont">
+      		<h1>wwPDB Messaging Module - Annotator View</h1>
+      		<!-- <span id="help" class="ui-icon ui-icon-info fltrgt"></span>  -->
+		</div>
+    	<br class="clearfloat" /> 
+	</div>
+<!-- #header ends above-->
+    <br class="clearfloat" />
+	<br />
+<!-- #mainContent begins -->
+	<div id="mainContent">
+		<div class="errmsg glblerr ui-state-error ui-corner-all noprint"></div>
+			
+		<h2 id="content_type_hdr" style="width: 50%%; margin: 0 auto; text-align:center;">%(content_type_hdr)s</h2>
+		<br class="clearfloat" />
+		<div class="noprint displaynone">
+				<form name="hlprfrm" id="hlprfrm" method="post" action="">
+					<input type="hidden" name="rowids" id="rowids" value="" />
+					<input type="hidden" name="sessionid" id="sessionid" value="%(sessionid)s" />
+	      			<input type="hidden" name="identifier" id="identifier" value="%(identifier)s" />
+	      			<input type="hidden" name="sender" id="msg_compose_sender" value="%(annotator)s" />
+	      			<input type="hidden" name="instance" id="instance" value="%(instance)s" />
+	      			<input type="hidden" name="filesource" id="filesource" value="%(filesource)s" />
+	      			<input type="hidden" name="content_type" id="hlprfrm_content_type" value="%(content_type)s" />
+	      			<input type="hidden" name="caller" id="caller" value="%(caller)s" />
+	      			<input type="hidden" name="filePath" id="filePath" value="%(filepath)s" />
+	      			<input type="hidden" name="fileType" id="fileType" value="%(filetype)s" />
+				</form>
+				<!-- <input id="saveunfinished" name="saveunfinished" value="Save" class="fltrgt" type="button" disabled="disabled">  -->
+		</div>
+		<br />
+		<div id="loading">
+	    	<div id="loadingcontent">
+		    	<p id="loadingspinner">
+		            Sending ...
+	        	</p>
+	      	</div>
+	    </div>
+		<div id="archive_msg" title="">
+			<div>
+				<br />
+				<label for="archive_msg_target_depid"><span class="strong">Archive to following Deposition IDs (please use commas when indicating more than one entry): </span></label>
+				<br />
+				<input type="text" name="target_identifier" id="archive_msg_target_depid" class="text ui-widget-content ui-corner-all" style="width:350px;margin-top:5px;" value="%(identifier)s" />
+			</div>
+		</div>
+		<div id="msg_dialog_content" class="">
+			<div id="msg_body_dsply" title="">
+				<!-- <p class="topcaption">TESTING</p> -->
+				<div style="margin-bottom:7px;" autofocus="autofocus"><span class="strong">SUBJECT: </span><span id="msg_subject">%(message_subject)s</span></div>
+				<div style="margin-bottom:7px;"><span class="strong">SENDER: </span><span id="msg_sender">%(sender)s</span></div>
+				<div><span class="strong">DATETIME: </span><span id="msg_timestamp">%(timestamp)s</span></div>
+				<input type="hidden" name="msg_id" id="msg_id" value="" />
+				<br />
+				<div><span class="strong">DEPOSITION ID: </span><span id="msg_dep_id">%(deposition_data_set_id)s</span></div>
+				<div style="margin-top:7px;"><span class="strong %(display_pdbid)s">PDB ID: </span><span id="msg_pdb_id">%(pdb_id)s</span></div>
+				<!-- <div><span class="strong">ORDINAL ID: </span><span id="msg_ordinal_id">TEST ORDINAL ID</span></div>  -->
+				<br /><br /><br />
+				<label for="msg_body"><span class="strong">MESSAGE:</span></label>
+				<div id="msg_body" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;white-space:pre-wrap;overflow:auto;overflow-y:hidden;">%(message_text)s</div>
+				<div id="parent_msg_div" class="%(parent_msg_dsply)s">
+					<br />
+					<br />
+					<label for="parent_msg"><span class="strong">IN REPLY TO:</span></label>
+					<div name="parent_message" id="parent_msg" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;white-space:pre-wrap;overflow:auto;overflow-y:hidden;"><span class="strong">SENDER: </span>%(parent_msg_sndr)s<p><span class="strong">DATE/TIME: </span>%(parent_msg_datetime)s</p><p>%(parent_msg_text)s</p>
+					</div>
+				</div>
+				<div id="files_rfrncd_div" class="%(files_rfrncd_dsply)s">
+					<br />
+					<br />
+					<label for="files_rfrncd"><span class="strong">FILES REFERENCED:</span></label>
+					<div name="files_rfrncd" id="files_rfrncd" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;">%(files_rfrncd)s</div>
+				</div>
+			</div>
+			<br /><br />
+			<div id="msg_actions">
+				<input style="margin-left: 5px; font-size: .8em;" class="fltrgt readonly" id="close" name=""archive"" value="Close" type="button">
+				<input style="margin-left: 5px; font-size: .8em;" class="fltrgt write" id="archive" name=""archive"" value="Archive" type="button">
+				<input style="margin-left: 5px; font-size: .8em;" class="fltrgt write" id="reply" name="reply" value="Reply" type="button">				
+			</div>
+			<br /><br />
+			<div id="msg_compose" title="Compose %(new_cntnt_type_btnlbl)s" class="displaynone">
+				<!-- <p class="topcaption">Use form below to submit message.</p> -->
+				<form id="msg_compose_frm" enctype="multipart/form-data" method="post">
+					<fieldset>
+						<input type="hidden" name="sessionid" id="msg_compose_sessionid" value="%(sessionid)s" />
+						<input type="hidden" name="context_type" id="msg_compose_context_type" value="" />
+						<input type="hidden" name="context_value" id="msg_compose_context_value" value="" />
+						<input type="hidden" name="sender" id="msg_compose_sender" value="%(annotator)s" />
+						<input type="hidden" name="msg_id" id="msg_compose_msg_id" value="" />
+						<input type="hidden" name="parent_msg_id" id="msg_compose_parent_msg_id" value="" />
+						
+						<label for="msg_compose_dep_id"><span class="strong">DEPOSITION ID: </span></label>
+						<input type="text" name="identifier" id="msg_compose_dep_id" class="text ui-widget-content ui-corner-all" style="width:150px;margin-top:5px;margin-bottom:22px;" readonly="readonly" />
+						<label for="msg_compose_subject"" ><span class="strong">SUBJECT:</span></label>
+						<input type="text" name="subject" id="msg_compose_subject" class="text ui-widget-content ui-corner-all" style="width:650px;margin-top:5px;" />
+						<div id="msg_compose_assoc_files">
+							<br />
+							<label for="msg_file_reference" style="display: inline;" ><span class="strong">ASSOCIATE FILES:</span></label><input type="checkbox" id="select_all_file_references" style="display: inline; margin-left: 20px;" /><label for="select_all_file_references" style="display: inline;  margin-left: 5px;">All</label><br /><br />
+							<span id="checkbox_model" class="assoc_files_chckbox displaynone" >Coordinate file (CIF)<input type="checkbox" name="msg_file_references" value="model" style="display: inline; margin-right: 10px;" /></span>
+							<span id="checkbox_model_pdb" class="assoc_files_chckbox displaynone" >Coordinate file (PDB)<input type="checkbox" name="msg_file_references" value="model_pdb" style="display: inline; margin-right: 10px;" /></span>
+							<span id="checkbox_sf" class="assoc_files_chckbox displaynone" >Structure factor file<input type="checkbox" name="msg_file_references" value="sf" style="display: inline; margin-right: 10px;"/></span>
+							<span id="checkbox_mr" class="assoc_files_chckbox displaynone nmr" >NMR restraints file<input type="checkbox" name="msg_file_references" value="mr" style="display: inline; margin-right: 10px;" class="nmr"/></span>
+							<span id="checkbox_cs" class="assoc_files_chckbox displaynone nmr" >NMR chemical shifts file<input type="checkbox" name="msg_file_references" value="cs" style="display: inline; margin-right: 10px;" class="nmr"/></span>
+							<span id="checkbox_em-volume" class="assoc_files_chckbox displaynone" >EM volume<input type="checkbox" name="msg_file_references" value="em-volume" style="display: inline; margin-right: 10px;" /></span>
+							<span id="checkbox_em-mask" class="assoc_files_chckbox displaynone" >EM mask<input type="checkbox" name="msg_file_references" value="em-mask" style="display: inline; margin-right: 10px;"/></span>
+							<br /><br />
+							<span id="checkbox_val-report" class="assoc_files_chckbox displaynone" >Validation report (PDF)<input type="checkbox" name="msg_file_references" value="val-report" style="display: inline; margin-right: 10px;"/></span>
+							<span id="checkbox_val-report-full" class="assoc_files_chckbox displaynone" >Validation report full (PDF)<input type="checkbox" name="msg_file_references" value="val-report-full" style="display: inline; margin-right: 10px;"/></span>
+							<span id="checkbox_val-data" class="assoc_files_chckbox displaynone" >Validation data (XML)<input type="checkbox" name="msg_file_references" value="val-data" style="display: inline; margin-right: 10px;"/></span>
+							<br />
+							<br />
+							<br />
+						</div>
+						<label for="msg_compose_body"><span class="strong" style="text-transform:uppercase;">%(new_cntnt_type_btnlbl)s:</span></label>
+						<textarea rows="15" name="message" id="msg_compose_body" class="text ui-widget-content ui-corner-all" style="margin-top:5px;padding:10px;"></textarea>
+	
+						<div id="msg_compose_parent_msg_div" class="displaynone">
+							<br />
+							<br />
+							<label for="msg_compose_parent_msg"><span class="strong">IN REPLY TO:</span></label>
+							<div name="parent_message" id="msg_compose_parent_msg" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:5px;white-space: pre-wrap;"></div>
+						</div>
+						<br />
+						<br />
+						<br />
+						<div id="msg_compose_attch_aux_file">
+							<label for="aux-file1"><span class="strong">ATTACH AUXILIARY FILE:</span></label><br />
+							<span id="aux-file-span1"><input type='file' size='50' id="aux-file1" name="aux-file1" class="c_%(identifier)s file_upload fltlft"/><input id="clear1" name="clear1" value="Clear" class="fltlft clearfile" style="padding: 1px; margin-left: 5px;" type="button" /><input id="addanother1" name="addanother1" value="Add Another File" class="fltlft addanother" style="padding: 1px; margin-left: 5px;" type="button" /></span><br /><br class="clearflt" />
+							<span id="aux-file-span2" class="displaynone"><input type='file' size='50' id="aux-file2" name="aux-file2" class="c_%(identifier)s file_upload fltlft"/><input id="clear2" name="clear2" value="Clear" class="fltlft clearfile" style="padding: 1px; margin-left: 5px;" type="button" /><input id="addanother2" name="addanother2" value="Add Another File" class="fltlft addanother" style="padding: 1px; margin-left: 5px;" type="button" /></span><br /><br class="clearflt" />
+							<span id="aux-file-span3" class="displaynone"><input type='file' size='50' id="aux-file3" name="aux-file3" class="c_%(identifier)s file_upload fltlft"/><input id="clear3" name="clear3" value="Clear" class="fltlft clearfile" style="padding: 1px; margin-left: 5px;" type="button" /></span><br /><br class="clearflt" />
+						</div>
+					</fieldset>
+				</form>
+				
+			</div>
+			</div>
+	</div>
+	<!-- #mainContent ends with above /div -->
+
+<!-- #footer begins -->
+	<br class="clearfloat" />
+	<div id="footer">
+   		<p>&copy; 2014 wwPDB Messaging Module V0.01</p>
+	</div>
+<!-- #footer ends above -->
+</div>
+<!-- #container ends above-->
+</body>
+</html>

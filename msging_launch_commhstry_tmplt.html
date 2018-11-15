@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<title>Msg: %(identifier)s</title>
+
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/oneColLiqCtrHdr.css" />
+
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/jquery.dataTables.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/jquery.dataTables.wwpdb.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/dataTables.colReorder-1.1.3.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/dataTables.tableTools-2.2.4.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/themes/custom/jquery-ui-1.10.3.custom.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/themes/custom/jquery-ui-1.10.3.custom.wwpdb.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/msgmodule.css" />
+<!-- Found that needed below style in page as opposed to msgmodule.css for effects to be properly rendered in Firefox 31.1.0 (but not necessary for Chrome) -->
+<style type="text/css">
+#loading{
+        display:none;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        background:rgba(255,255,255,0.8);
+        z-index:1000;
+}
+#loadingcontent{
+        display:table;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        z-index:1200;
+}
+#loadingspinner{
+        display: table-cell;
+        vertical-align:middle;
+        width: 100%%;
+        text-align: center;
+        font-size:larger;
+        padding-top:80px;
+        z-index:1200;
+}
+</style>
+
+<script type="text/javascript">
+	var CORRSPNDNC_HSTRY_STNDALN = true;
+	var SESSION_ID = '%(sessionid)s';
+	var DEPID     = '%(identifier)s';
+        var DISPLAYID = '%(display_identifier)s';
+	var SESS_PATH_PREFIX = '%(session_url_prefix)s';
+	var FILE_SOURCE = '%(filesource)s';
+	var CONTENT_TYPE = '%(content_type)s';
+	var EMBEDDED_VW = false;
+	var EM_ENTRY = false;
+	var EM_MAP_ONLY = false;
+	var EM_MAP_AND_MODEL = false;
+</script>
+<script type="text/javascript" src="/js/jquery-2.1.3/core/jquery-2.1.3.js"></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/ui/jquery-ui.custom.min.js" defer></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery.form.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.hoverIntent.minified.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.bt-0.9.7.wwpdb.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.dataTables-1.10.5.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/dataTables.colReorder-1.1.3.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/dataTables.tableTools-2.2.4.wwpdb.min.js" defer></script>
+<script type="text/javascript" src="/workmanager/media/js/depui.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/spin.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.spin.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/bootstrap.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/crrspndnc-hstry-stndaln.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/msging-main.min.js?v=20160809"></script>
+</head>
+<body class="">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#msging-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img src="/images/wwpdb_logo.gif" height="40" alt="logo" style="margin-top: 5px; margin-right: 15px;" />
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="msging-navbar">
+    	<p class="navbar-text">Correspondence Browser</p>
+    	<form id="vw_crrspndnc" class="navbar-form navbar-left" role="search" action="javascript:handleSubmit();">
+	    	<div class="form-group">
+	    		<input type="text" class="form-control" placeholder="D_XXXXXXXXXX" id="identifier" name="identifier" style="text-transform:uppercase">
+	  		</div>
+	  		<input id="vw_crrspndnc_submit" type="button" class="btn btn-default" value="Submit">
+  		</form>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div id="container">
+    
+<!-- #mainContent begins -->
+	<div id="mainContent" style="margin-left: 2.5%%;">
+		<div class="errmsg glblerr ui-state-error ui-corner-all noprint"></div>
+
+ 			<div class="noprint displaynone">
+				<form name="hlprfrm" id="hlprfrm" method="post" action="">
+					<input type="hidden" name="rowids" id="rowids" value="" />
+					<input type="hidden" name="sessionid" id="sessionid" value="%(sessionid)s" />
+	      			<input type="hidden" name="identifier" id="identifier" value="%(identifier)s" />
+	      			<input type="hidden" name="filesource" id="filesource" value="%(filesource)s" />
+	      			<input type="hidden" name="content_type" id="hlprfrm_content_type" value="" />
+				</form>
+			</div>
+ 						
+			<div id="msglist_panel" class="fltlft well well-sm" style="width: 95%%; ">
+						<div id="rslts_resize_container" style="overflow: hidden; padding-bottom: 10px; padding-right: 10px;">
+							<div id="rslts"></div>
+							<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+						</div>
+			</div>
+			<br class="clearfloat"/>
+			<!-- #main msglist_panel ends with above /div -->
+
+		<br class="clearfloat" />
+		<div id="loading">
+	    	<div id="loadingcontent">
+		    	<p id="loadingspinner">
+		            Processing ...
+	        	</p>
+	      	</div>
+	    </div>
+		<div id="context_menu_content" class="displaynone">
+			<ul id="context_menu">
+				<!-- <li><a href="#" id="view_msg_nw_wndw" class="msg_context_menu_choice">View message in new window</a></li> -->
+				<li><a href="#" id="tag_msg_choice" class="msg_context_menu_choice">Tag message</a></li>
+				<li><a href="#" id="archv_msg" class="msg_context_menu_choice">Archive message</a></li>
+				<!-- <li><a href="#" id="fwd_msg" class="msg_context_menu_choice">Forward Message</a></li> -->
+			</ul>
+			
+			<div id="forward_msg" title="">
+				<div>
+					<br />
+					<label for="forward_msg_target_depid"><span class="strong">Forward to following Deposition IDs (please use commas when indicating more than one entry): </span></label>
+					<br />
+					<input type="text" name="target_identifier" id="forward_msg_target_depid" class="text ui-widget-content ui-corner-all" style="width:350px;margin-top:5px;" value="" />
+				</div>
+			</div>
+		</div>
+		<button class="btn btn-primary" id="btn_collapse_msg_preview" type="button" data-toggle="collapse" data-target="#collapse_msg_preview" aria-expanded="false" aria-controls="collapse_msg_preview">
+		  Show Message View Panel
+		</button>
+		<!-- Button trigger modal 
+		<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+		  Launch demo modal
+		</button>
+		-->
+		
+		<br />
+		<br />
+		<div class="collapse well well-sm" id="collapse_msg_preview" style="width: 95%%;">
+			<div id="preview_hdr" style="overflow: hidden; padding-right: 10px; "><!-- border-style: solid; border-width: 1px; border-bottom-style: none; background: #F2F2F2;  -->
+				
+						<div class="fltlft">
+							<div style="margin:8px;"><span class="strong">SUBJECT: </span><span id="preview_msg_subject">TEST SUBJECT</span></div>
+							<div style="margin:8px;"><span class="strong">SENDER: </span><span id="preview_msg_sender">TEST SENDER</span></div>
+							<div style="margin:8px;"><span class="strong">DATETIME: </span><span id="preview_msg_timestamp">TEST TIMESTAMP</span></div>
+						</div>
+						<div id="preview_msg_actions" class="fltrgt" style="margin-right:5px; margin-top:8px; width: 15%%;">
+							<!-- <input style="margin-left: 5px; font-size: .8em;" class="fltrgt" id="redraw" name="redraw" value="RedrawTest" type="button"> -->
+							<input style="margin-left: 5px;" class="preview_msg_action_btn edit draft_view pull-right btn btn-primary" id="edit_preview" name="edit" value="Edit" type="button">
+							<input style="margin-left: 5px;" class="preview_msg_action_btn reply pull-right btn btn-primary" id="reply_preview" name="reply" value="Reply" type="button">
+							<input style="margin-left: 5px;" class="preview_msg_action_btn tag_msg pull-right btn btn-default" id="tag_preview" name="tag" value="Tag" type="button">
+							<input style="margin-left: 5px;" class="preview_msg_action_btn archive pull-right btn btn-default" id="archive_preview" name="archive" value="Archive" type="button">
+						</div>
+			</div>
+			<div id="resize_container" style="overflow: hidden; height: 252px; padding-bottom: 10px; padding-right: 10px;"><!-- border-style: solid; border-width: 1px; -->
+				<div id="preview_msg" class="" style="height: 250px;"> <!-- border-style: solid; border-width: 1px; -->
+						<input type="hidden" name="preview_msg_id" id="preview_msg_id" value="" />
+						
+						<div id="preview_msg_body" class="text ui-widget-content ui-corner-all" style="padding:10px;margin:8px;white-space:pre-wrap;overflow:auto;overflow-y:hidden; width: 95%%;">TEST MSG BODY</div>
+						<!-- <textarea cols="105" rows="15" name="message" id="preview_msg_body" class="text ui-widget-content ui-corner-all" style="margin-top:5px;padding:10px;"></textarea> -->
+						<div id="preview_parent_msg_div" class="displaynone">
+							<br />
+							<label for="preview_parent_msg" style="margin:8px; width: 15%%;"><span class="strong">IN REPLY TO:</span></label>
+							<div name="parent_message" id="preview_parent_msg" class="text ui-widget-content ui-corner-all" style="padding:10px;margin:8px;white-space:pre-wrap;overflow:auto;overflow-y:hidden;width: 95%%;"></div>
+						</div>
+						<div id="files_rfrncd_div" class="displaynone" style="width: 95%%;">
+							<br />
+							<br />
+							<label for="files_rfrncd" style="margin:8px; width: 15%%;"><span class="strong">FILES REFERENCED:</span></label>
+							<div name="files_rfrncd" id="files_rfrncd" class="text ui-widget-content ui-corner-all" style="padding:10px;margin:8px;"></div>
+						</div>
+						<br />
+				</div> <!--  end preview_msg -->
+				<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+			</div>
+		</div>
+		
+		<div id="msg_dialog_content" >
+		<!-- Bootstrap Modal -->
+			<div id="msg_body_display" class="modal fade modal-wide" tabindex="-1" role="dialog" aria-labelledby="msg_body_display_lbl">
+			  <div class="modal-dialog modal-lg" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left: 25px"><span aria-hidden="true">&times;</span></button>
+			        <button type="button" class="btn btn-primary reply msg_view_only pull-right" id="reply_display" data-dismiss="modal" style="margin-left: 8px">Reply</button>
+			      	<button type="button" class="btn btn-default tag_msg msg_view_only pull-right" id="tag_display" style="margin-left: 8px">Tag</button>
+			      	<button type="button" class="btn btn-default archive pull-right" id="archive_display" data-dismiss="modal" style="margin-left: 8px">Archive</button>
+			      	<button type="button" class="btn btn-default cancel pull-right" id="cancel_display" data-dismiss="modal" style="margin-left: 8px">Close</button>
+			      	<h4 class="modal-title" id="msg_body_display_lbl"><span id="msg_subject">TEST SUBJECT</span></h4>
+			      </div>
+			      <div class="modal-body">
+			      	<div style="margin-bottom:7px;"><span class="strong">SENDER: </span><span id="msg_sender">TEST SENDER</span></div>
+					<div><span class="strong">DATETIME: </span><span id="msg_timestamp">TEST TIMESTAMP</span></div>
+					<input type="hidden" name="msg_id" id="msg_id" value="" />
+					<br />
+					<div><span class="strong">DEPOSITION ID: </span><span id="msg_dep_id">TEST DEP ID</span></div>
+					<!-- <div><span class="strong">ORDINAL ID: </span><span id="msg_ordinal_id">TEST ORDINAL ID</span></div>  -->
+					<br /><br /><br />
+					<label for="msg_body"><span class="strong">MESSAGE:</span></label>
+					<div id="msg_body" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;white-space:pre-wrap;overflow:auto;overflow-y:hidden;">TEST MSG BODY</div>
+					<div id="parent_msg_div" class="displaynone">
+						<br />
+						<br />
+						<label for="parent_msg"><span class="strong">IN REPLY TO:</span></label>
+						<div name="parent_message" id="parent_msg" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;white-space:pre-wrap;overflow:auto;overflow-y:hidden;"></div>
+					</div>
+					<div id="files_rfrncd_div_dialog" class="displaynone">
+						<br />
+						<br />
+						<label for="files_rfrncd_dialog"><span class="strong">FILES REFERENCED:</span></label>
+						<div name="files_rfrncd_dialog" id="files_rfrncd_dialog" class="text ui-widget-content ui-corner-all" style="padding:10px;margin-top:10px;"></div>
+					</div>
+			      </div>
+			      <div class="modal-footer">
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			
+			
+		</div>  <!-- id=msg_dialog_content -->
+		
+	</div>  <!-- id=mainContent -->
+	
+	<!-- #mainContent ends with above /div -->
+<!-- #footer begins -->
+	<br class="clearfloat" />
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+	  <div class="text-center">
+	    	<p style="margin-top: 18px; color: #696;">&copy; 2016 wwPDB Messaging Module V2.0</p>
+	  </div>
+	</nav>
+<!-- #footer ends above -->
+</div>
+<!-- #container ends above-->
+</body>
+</html>

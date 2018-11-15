@@ -1,0 +1,62 @@
+@charset "utf-8";
+table.trnspsd_tbl td:first-child {
+	border-right: 1px solid black;
+    /*font-weight: bold;*/
+	font-size: 1.1em;
+	/*color: 	#FFFFFF;*/
+   /*background: #C1D6C1; /*#eeeeee; #669966; #e3f2e1; */*/
+}
+table.trnspsd_tbl tr.odd td:first-child { background: #C1D6C1; }
+table.trnspsd_tbl tr.even td:first-child { background: #C1D6C1; }
+
+table.dataTable tr {font-weight: bold;}
+table.dataTable tr.msg_read {font-weight: normal; color: #2F4F4F;}
+
+table.dataTable tr.important {font-weight: bold; color: #FF0000;}
+table.dataTable tr.important.msg_read {font-weight: normal; color: #FF0000;}
+	
+table.dataTable tbody .prmry_key { background: #C1D6C1; }
+table.dataTable tbody .prmry_key .newrecord{background: #ffcc00;}
+table.dataTable tbody .child_msg { padding-left: 2.5em;}
+table.dataTable tr.odd { background-color: #e3f2e1; }
+table.dataTable tbody .newrecord{background: #ffcc00;}
+table.dataTable tr.row_selected{ background-color: #add8e6;}
+table.dataTable tr.even td.sorting_1{ background-color: #e3f2e1;}
+table.dataTable tr.odd td.sorting_1{ background-color: #C1D6C1;}
+table.dataTable tr.row_selected td.sorting_1{ background-color: #add8e6;}
+table.dataTable tbody tr.row_selected .prmry_key { background-color: #add8e6;}
+table.dataTable tr.row_selected .newrecord { background-color: #add8e6;}
+/**table.dataTable tbody .indent_1 { padding-left: 2.5em;}
+table.dataTable tbody .indent_2 { padding-left: 5.0em;}
+table.dataTable tbody .indent_3 { padding-left: 7.5em;}
+table.dataTable tbody .indent_4 { padding-left: 10em;}
+table.dataTable tbody .indent_5 { padding-left: 12.5em;}***/
+table.dataTable tbody .indent_0 { padding-left: 25px;}
+table.dataTable tbody .indent_1 { padding-left: 40px;}
+table.dataTable tbody .indent_2 { padding-left: 55px;}
+table.dataTable tbody .indent_3 { padding-left: 70px;}
+table.dataTable tbody .indent_4 { padding-left: 85px;}
+table.dataTable tbody .indent_5 { padding-left: 100px;}
+
+div.dataTables_paginate .paginate_active { background-color: #cae6c6; }
+
+div.dataTables_length,
+div.dataTables_filter,
+div.dataTables_paginate,
+div.dataTables_info {
+    padding: 6px;
+}
+div.dataTables_filter label{ display: inline;}
+div.dataTables_filter input{ display: inline;}
+div.dataTable_wrapper depdatasetlabel{padding: 6px}
+
+thead input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+}
+
+/** below settings found necessary to retain same look when updating to DataTables 1.10.5 from 1.9.0 **/
+table.dataTable tbody th, table.dataTable tbody td {padding: 3px 10px;}
+table.dataTable {border-spacing: 1px;}
+/** above settings found necessary when updating to DataTables 1.10.5 from 1.9.0 **/

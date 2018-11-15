@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<title>Correspondence Browser</title>
+
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/oneColLiqCtrHdr.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/msgmodule/styles/msgmodule.css" />
+
+<script type="text/javascript" src="/js/jquery-2.1.3/core/jquery-2.1.3.js"></script>
+<script type="text/javascript" src="/js/jquery/plugins/jquery.form.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.hoverIntent.minified.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/jquery/plugins-src/jquery.bt-0.9.7.wwpdb.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/bootstrap.min.js" defer></script>
+<script type="text/javascript" src="/msgmodule/js/crrspndnc-hstry-stndaln.min.js" defer></script>
+</head>
+<body class="">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#msging-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img src="/images/wwpdb_logo.gif" height="40" alt="logo" style="margin-top: 5px; margin-right: 15px;" />
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="msging-navbar">
+    	<p class="navbar-text">Correspondence Browser</p>
+    	<form id="vw_crrspndnc" class="navbar-form navbar-left" role="search" action="javascript:handleSubmit();">
+	    	<div class="form-group">
+	    		<input type="text" class="form-control" placeholder="D_XXXXXXXXXX" id="identifier" name="identifier" style="text-transform:uppercase">
+	  		</div>
+	  		<input id="vw_crrspndnc_submit" type="button" class="btn btn-default" value="Submit">
+  		</form>
+  		
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div id="container">
+    
+<!-- #mainContent begins -->
+	<div id="mainContent" style="margin-left: 2.5%%;">
+		<div class="errmsg glblerr ui-state-error ui-corner-all noprint"></div>
+	</div>  <!-- id=mainContent -->
+	
+	<!-- #mainContent ends with above /div -->
+<!-- #footer begins -->
+	<br class="clearfloat" />
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+	  <div class="text-center">
+	    	<p style="margin-top: 18px; color: #696;">&copy; 2016 wwPDB Messaging Module V2.0</p>
+	  </div>
+	</nav>
+<!-- #footer ends above -->
+</div>
+<!-- #container ends above-->
+</body>
+</html>

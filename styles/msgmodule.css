@@ -1,0 +1,74 @@
+/* For jQuery UI - modal dialog form styling --------------------*/
+label, input { display:block; }
+input.text { margin-bottom:12px; width:95%%; padding: 0.4em; }
+fieldset { padding:0; border:0; margin-top:25px; }
+.topcaption { border: 1px solid transparent; padding: 0.3em; }
+.ui-dialog .ui-state-error { padding: 0.3em; }
+
+.ui-menu { z-index: 100; }
+#context_menu { position:absolute; display:none; }
+
+#loading{
+        display:none;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        background:rgba(255,255,255,0.8);
+        z-index:1000;
+}
+#loadingcontent{
+        display:table;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%%;
+        height:100%%;
+        z-index:1200;
+}
+#loadingspinner{
+        display: table-cell;
+        vertical-align:middle;
+        width: 100%%;
+        text-align: center;
+        font-size:larger;
+        padding-top:80px;
+        z-index:1200;
+}
+
+/* BOOTSTRAP ENHANCEMENTS */
+.navbar-default .navbar-nav li a.notes_nav { 
+	color: purple;
+}
+.navbar-default .navbar-nav li a.notes_nav:hover { 
+	color: #BC3CBC;
+}
+.navbar-default .navbar-nav>.active>a.notes_nav, .navbar-default .navbar-nav>.active>a.notes_nav:hover, .navbar-default .navbar-nav>.active>a.notes_nav:focus{ 
+	color: purple;
+}
+
+.navbar-default .navbar-nav li a.commhstry_nav { 
+	color: #0000FF;
+}
+.navbar-default .navbar-nav li a.commhstry_nav:hover { 
+	color: #4D4DFF;
+}
+.navbar-default .navbar-nav>.active>a.commhstry_nav, .navbar-default .navbar-nav>.active>a.commhstry_nav:hover, .navbar-default .navbar-nav>.active>a.commhstry_nav:focus{ 
+	color: #0000FF;
+}
+
+
+
+.modal.modal-wide .modal-dialog {
+  width: 75%;
+}
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+body { padding-bottom: 70px; } /** this required so that sticky page footer does not conceal any page contents after resizing of browser/resizable divs **/
+
+.hoveractivate.dropdown:hover .dropdown-menu{
+    display: block;
+    margin-top: 0; // remove the gap so it doesn't close
+ }
