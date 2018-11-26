@@ -345,8 +345,7 @@ $(document).ready(function() {
 			        	if( jsonData ){
 							try{
 								if( jsonData.depui_pwd.length > 0 ){
-									dodepuiresetmessage(document, MsgingMod.sDepId, jsonData.depui_pwd);
-									dodepuistatusmessage(document, MsgingMod.sDepId, jsonData.depui_pwd, "unlock");
+								        dodepuistatus(MsgingMod.sSessionId, MsgingMod.sDepId, 'unlock_with_rest');
 									progressEnd();
 									MsgingMod.sViewContext = "sentmsgs";
 									MsgingMod.sCrrntContentType = "msgs";
@@ -2440,7 +2439,7 @@ function submitNewMsg(sendStatusToUse) {
 				try{
 					if( String(jsonObj.pdbx_model_updated) == "true"){
 						//if model file was associated with message then we need to ask DEP UI to reset itself
-						dodepuiresetmessage(document, MsgingMod.sDepId, jsonObj.depid_pw);
+						dodepuireset(MsgingMod.sSessionId, MsgingMod.sDepId, false);
 					}else if( String(jsonObj.pdbx_model_updated) == "false"){
 						//alert("AnnotCommUI says: no annotate-model file being generated.");
 					}

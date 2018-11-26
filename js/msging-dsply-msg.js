@@ -138,7 +138,8 @@ $(document).ready(function() {
 	$.ajax({url: '/msgmodule/js/jquery/ui/jquery-ui.custom.min.js', async: false, dataType: 'script'});
 	$.ajax({url: '/js/jquery/plugins/jquery.form.min.js', async: false, dataType: 'script'});
 	$.ajax({url: '/msgmodule/js/jquery/plugins-src/jquery.bt-0.9.7.wwpdb.min.js', async: false, dataType: 'script'});
-	$.ajax({url: '/workmanager/media/js/depui.js', async: false, dataType: 'script'}); //evenutally needed for Annot-to-DepUI "RESET" comm
+	$.ajax({url: '/msgmodule/js/depui.js', async: false, dataType: 'script'}); //evenutally needed for Annot-to-DepUI "RESET" comm
+	$.ajax({url: '/msgmodule/js/wfm.js', async: false, dataType: 'script'}); //evenutally needed for Annot-to-DepUI "RESET" comm
 	$.ajax({url: '/msgmodule/js/jquery/plugins-src/spin.js', async: false, dataType: 'script'});
 	$.ajax({url: '/msgmodule/js/jquery/plugins-src/jquery.spin.js', async: false, dataType: 'script'});
 	
@@ -798,7 +799,7 @@ function submitNewMsg(sendStatusToUse) {
 				try{
 					if( String(jsonObj.pdbx_model_updated) == "true"){
 						//if model file was associated with message then we need to ask DEP UI to reset itself
-						dodepuiresetmessage(document, MsgingMod.sDepId, jsonObj.depid_pw);
+					        dodepuireset(document, MsgingMod.sDepId, jsonData.depui_pwd, false);
 					}else if( String(jsonObj.pdbx_model_updated) == "false"){
 						//alert("AnnotCommUI says: no annotate-model file being generated.");
 					}

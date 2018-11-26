@@ -33,14 +33,14 @@ module.exports = function(grunt) {
             },
             display: {
                 files: ['js/msging-dsply-msg.js'],
-                tasks: ['uglify:fxn'],
+                tasks: ['uglify:display'],
                 options: {
                     spawn: false,
                 },
             },
             history: {
                 files: ['js/crrspndnc-hstry-stndaln.js'],
-                tasks: ['uglify:category'],
+                tasks: ['uglify:history'],
                 options: {
                     spawn: false,
                 },
