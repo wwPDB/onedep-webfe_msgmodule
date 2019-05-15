@@ -2044,6 +2044,35 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 	
 	if( MsgingMod.sCrrntContentType == "msgs"){ 
 		confirmAvailFiles( function() {
+
+		        // Ordered list of items to display
+		        var mapping = [
+			    ["val-report", "PDF report"],
+			    ["val-report-full", "full PDF report"],
+			    //["Garbage", "Garbage"],
+			    ["val-data", "XML data"],
+			    ["val-report-slider", "slider"],
+			    ["val-report-wwpdb-fo-fc-edmap-coef", "fofc map coef"],
+			    ["val-report-wwpdb-2fo-fc-edmap-coef", "2fofc map coef"]
+			];
+
+
+		        var valrepfiles = [];
+		        for( var x=0; x < mapping.length; x++){
+			    key = mapping[x][0];
+			    val = mapping[x][1];
+			    for( var y=0; y < MsgingMod.arrAvailFiles.length; y++){
+				if(MsgingMod.arrAvailFiles[y] === key) {
+				    valrepfiles.push(val)
+				}
+			    }
+			    
+			}
+		        var valrepstring = valrepfiles.join(", ");
+		        if(valrepstring.length > 0) {
+		            $('#checkbox_val-report-batch-opttext').html(' (' + valrepstring + ')');
+			}
+		    
 			for( var x=0; x < MsgingMod.arrAvailFiles.length; x++){
 				//$('#checkbox_'+MsgingMod.arrAvailFiles[x]).show();
 				if( !( MsgingMod.bEmEntry && MsgingMod.bEmMapOnly && ( MsgingMod.arrAvailFiles[x] === "model" || MsgingMod.arrAvailFiles[x] === "model_pdb" ) ) ){
