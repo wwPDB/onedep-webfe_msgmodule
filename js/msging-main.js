@@ -139,6 +139,7 @@ var MsgingMod = {
 	iScrollY_CommHstry: 175,
 	iRsltsResizeContainerHtPrePrint_CommHstry: 385,
 	bCorrspndncHstryStndaln: false,
+	sStatusCode: "",
 	// URL constants
 	URL: {
 		WFLAUNCH: '/service/messaging/new_session/wf',
@@ -333,45 +334,47 @@ $(document).ready(function() {
 		$("#context_menu").hide();
 	});
 	
-	$("#unlock_depui").on("click", function() {
-		
-		var reallyWantTo = confirm("Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.");
-		if (reallyWantTo == true) {
-			
-			progressStart();
-			setTimeout(function(){
-				$('#hlprfrm').ajaxSubmit({url: MsgingMod.URL.GET_DEPUI_PWD, async: true, clearForm: false,
-			        success: function(jsonData) {
-			        	if( jsonData ){
-							try{
-								if( jsonData.depui_pwd.length > 0 ){
-								        dodepuistatus(MsgingMod.sSessionId, MsgingMod.sDepId, 'unlock_with_rest');
-									progressEnd();
-									MsgingMod.sViewContext = "sentmsgs";
-									MsgingMod.sCrrntContentType = "msgs";
-									reLoadMsgs();
-									composeMsg(undefined,undefined,undefined,undefined,undefined,'system-unlocked');
-								}else{
-									alert("Problem obtaining access to Dep UI");
-								}
-							}
-							catch(err){
-								alert("Problem when application made request to have DEP UI reset.");
-							}	        		
-			        	}
-			        }
-			    });
-				progressEnd();
-				
-			},1100);
-			
-				
-		} else {
-		    //alert("Reset of Dep UI cancelled.");
-		}
-		
+        $("#unlock_depui").on("click", function() {
+	    // Open modal 
+            if (MsgingMod.sStatusCode == 'REL') {
+		$("#dialog-unlock-body").html("<p style='color:red;text-align:center;'>WARNING -- WARNING -- WARNING -- WARNING -- WARNING</p><p>This entry has already been <span style='color:red;'>RELEASED</span>!!!</p><p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>")
+            } else {
+		$("#dialog-unlock-body").html("<p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
+            }
+	    $("#dialog-unlock-confirm").modal("show");
 	});
-	
+
+
+        $('#tag_unlock_ok').on('click', function() {
+            progressStart();
+            setTimeout(function() {
+		$('#hlprfrm').ajaxSubmit({
+                    url: MsgingMod.URL.GET_DEPUI_PWD,
+                    async: true,
+                    clearForm: false,
+                    success: function(jsonData) {
+			if (jsonData) {
+                            try {
+				if (jsonData.depui_pwd.length > 0) {
+                                    dodepuistatus(MsgingMod.sSessionId, MsgingMod.sDepId, 'unlock_with_rest');
+                                    progressEnd();
+                                    MsgingMod.sViewContext = "sentmsgs";
+                                    MsgingMod.sCrrntContentType = "msgs";
+                                    reLoadMsgs();
+                                    composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
+				} else {
+                                    alert("Problem obtaining access to Dep UI");
+				}
+                            } catch (err) {
+				alert("Problem when application made request to have DEP UI reset.");
+                            }
+			}
+                    }
+		});
+		progressEnd();
+		
+            }, 1100);
+	});
 	
 	$(".modal-wide").on("show.bs.modal", function() {
 		  var height = $(window).height() - 100;
@@ -775,6 +778,10 @@ function getMsgTemplates() {
     $('#hlprfrm').ajaxSubmit({url: MsgingMod.URL.GET_MSG_TMPLTS, clearForm: false, dataType: 'json',
         success: function(jsonData) {
         	$('#msg_compose_frm').after(jsonData.html); //populate target div with markup representing the "skeleton" starter table
+    
+                if('status_code' in jsonData) {
+		    MsgingMod.sStatusCode = jsonData.status_code;
+		}
         	
         	MsgingMod.bEmEntry = ($("#em_entry").text() === "true") ? true : false;
         	$('#msg_compose_input_em_entry').val($("#em_entry").text());

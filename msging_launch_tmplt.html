@@ -45,6 +45,7 @@
         padding-top:80px;
         z-index:1200;
 }
+
 </style>
 
 <script type="text/javascript">
@@ -248,6 +249,7 @@
 		</div>
 		
 		<div id="msg_dialog_content" >
+
 		<!-- Bootstrap Modal -->
 			<div id="msg_body_display" class="modal fade modal-wide" tabindex="-1" role="dialog" aria-labelledby="msg_body_display_lbl">
 			  <div class="modal-dialog modal-lg" role="document">
@@ -443,6 +445,24 @@
 			</div>
 			
 		</div>  <!-- id=msg_dialog_content -->
+
+		<div id="dialog-unlock-confirm" class="modal fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title" id="archive_msg_lbl">Unlock Deposition</h4>
+		      </div>
+		      <div id="dialog-unlock-body" class="modal-body">
+			<p> Hello</p>
+		      </div>
+		      <div class="modal-footer">
+			<button type="button" class="btn btn-default" id="tag_unlock_cancel" data-dismiss="modal">Cancel</button>
+			<button type="button" class="btn btn-primary" id="tag_unlock_ok" data-dismiss="modal">Ok</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 		
 	</div>  <!-- id=mainContent -->
 	
