@@ -398,7 +398,7 @@ $(document).ready(function() {
 		var msgSubj = $('#msg_compose_subject').val();
 		
 		if( msgSubj.length > 1 ){ // i.e.this msg had content in Message field
-			if( MsgingMod.sCrrntCmpsMsgTmplt == 'vldtn' || msgSubj.indexOf("Validation report") >= 0 || msgSubj.indexOf("are ready for your review") >= 0 ){
+			if( MsgingMod.sCrrntCmpsMsgTmplt == 'vldtn' || MsgingMod.sCrrntCmpsMsgTmplt == 'maponly-authstatus-em' || msgSubj.indexOf("Validation report") >= 0 || msgSubj.indexOf("are ready for your review") >= 0 ){
 				var numAttchmnts = $('#msg_compose_assoc_files').find('.checkbox-inline input[type=checkbox]:checked').length;
 				if( numAttchmnts < MsgingMod.iCmpsTotalFilesAvail ){ // i.e. all avail files were NOT selected for attachment
 					var doSend = confirm("WARNING: Only "+numAttchmnts+" file(s) selected for attachment. Click 'Cancel' if you wish to abort. Click 'OK' if you wish to send.");
@@ -2038,7 +2038,7 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 	**/
 	// DEBUG alert( "tmpltStyle before launch of modal is: "+tmpltStyle);
 	$('#msg_compose').on('shown.bs.modal', function (e) {
-		if( typeof(tmpltStyle) != "undefined" && ['vldtn','release-publ','release-nopubl'].indexOf(tmpltStyle) > -1 ){
+		if( typeof(tmpltStyle) != "undefined" && ['vldtn','release-publ','release-nopubl','maponly-authstatus-em'].indexOf(tmpltStyle) > -1 ){
 			$('#msg_compose_assoc_files').find('input[type=checkbox]:visible').prop('checked', true);
 			//$('#msg_compose_assoc_files').find('input[type=checkbox]:visible:not(.nmr)').prop('checked', true);
 		}else if( typeof(tmpltStyle) != "undefined" && ['withdrawn'].indexOf(tmpltStyle) > -1 ){
