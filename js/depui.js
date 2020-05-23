@@ -138,11 +138,11 @@ function promise_dodepuistatus(sessionid, depID, orig_stat) {
     if (orig_stat == 'unlock_with_rest') {
         return $.when(promise_dodepuireset(sessionid, depID, false))
             .done(function() {
-                console.log("About to CB");
+                // console.log("About to CB");
                 return docb;
             })
             .fail(function() {
-                console.log("About to CB");
+                // console.log("About to CB");
                 return docb;
             });
     } else {
