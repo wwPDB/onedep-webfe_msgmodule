@@ -130,9 +130,9 @@ function promise_dodepuistatus(sessionid, depID, orig_stat) {
         stat = 'unlock';
     }
     if (stat == 'lock') {
-        if (!confirm('Are you sure you want to do this, it will prevent the depositor using the depUI')) return;
+        if (!confirm('Are you sure you want to do this, it will prevent the depositor using the depUI')) return "cancel";
     } else if (stat == 'unlock') {
-        if (!confirm('Are you sure you want to do this, it will allow the depositor to edit data in the depUI')) return;
+        if (!confirm('Are you sure you want to do this, it will allow the depositor to edit data in the depUI')) return "cancel";
     }
     console.log("In dodepuistatus");
     if (orig_stat == 'unlock_with_rest') {
@@ -221,7 +221,7 @@ function reset_depui(actionurl, csrftoken) {
 
 function promise_dodepuireset(sessionid, depID, warning_flag) {
     if (warning_flag) {
-        if (!confirm('Are you sure you want to do this, it will delete all the depositors data in the depUI')) return;
+        if (!confirm('Are you sure you want to do this, it will delete all the depositors data in the depUI')) return "cancel";
     }
     console.log("Start dodepuireset");
 
