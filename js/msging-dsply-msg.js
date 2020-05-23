@@ -4,7 +4,7 @@ Author:		rsala (rsala@rcsb.rutgers.edu)
 Date:		2012-04-29
 Version:	0.0.1
 
-JavaScript supporting wwPDB Messaging Module web interface 
+JavaScript supporting wwPDB Messaging Module web interface
 
 2014-12-02, RPS: Created
 2015-01-28, RPS: Replacing closeWindow() with closeWndw() to help monitor, troubleshoot possible
@@ -12,7 +12,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 				 Decoupling successful return of submitNewMsg() from call to dodepuresetmessage()
 				 Inserting missing import of /workmanager/media/js/depui.js
 2015-02-06, RPS: Providing spinner display while sending message.
-2015-02-11, RPS: Fixing bug that occurs in cases wherein user closes parent message listing window before 
+2015-02-11, RPS: Fixing bug that occurs in cases wherein user closes parent message listing window before
 					replying to message opened in a child window.
 2015-03-02, RPS: Updates per introduction of sanity check safeguards on writes to messaging cif data files.
 2015-05-06, RPS: Updates per updates to jQuery 2.1.3, and associated javascript plugin updates.
@@ -20,7 +20,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
 	////////////////////////////////////////////////////////////////////////////
-	// use information dynamically populated in dsply_msg_tmplt.html file 
+	// use information dynamically populated in dsply_msg_tmplt.html file
 	// to initialize some of the crucial properties for MsgingMod
 	sSessionId : SESSION_ID,
 	sDepId : DEPID,
@@ -29,7 +29,7 @@ var MsgingMod = {
 	sFileSource : FILE_SOURCE,
 	bEmbeddedView : EMBEDDED_VW,
 	sCrrntMsgId : MSGID,
-	sCrrntDataSetID : DEPID, 
+	sCrrntDataSetID : DEPID,
 	sCrrntContentType : CONTENT_TYPE,  // i.e. "msgs" vs. "notes" vs. "commhstry"
 	////////////////////////////////////////////////////////////////////////////
 	iAjaxTimeout : 60000,
@@ -52,7 +52,7 @@ var MsgingMod = {
 	iMsgCmpsHtMin : 775,
 	iMsgCmpsHtWthParentContent : 875,
 	//iMsgDisplHtMin : 600,
-	iMsgDisplWdthMin : 1200, 
+	iMsgDisplWdthMin : 1200,
 	iMsgDisplHtMin : 800,
 	//iMsgDisplHtWthParentContent : 800,
 	iMsgDisplHtWthParentContent : 850,
@@ -111,7 +111,7 @@ String.prototype.startsWith = function(str){return (this.match("^"+str)==str);};
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-$(document).ready(function() {	
+$(document).ready(function() {
 	$(document).ajaxError(function(e, x, settings, exception) {
 	    try {
 	        if (x.status == 0) {
@@ -142,7 +142,7 @@ $(document).ready(function() {
 	$.ajax({url: '/msgmodule/js/wfm.js', async: false, dataType: 'script'}); //evenutally needed for Annot-to-DepUI "RESET" comm
 	$.ajax({url: '/msgmodule/js/jquery/plugins-src/spin.js', async: false, dataType: 'script'});
 	$.ajax({url: '/msgmodule/js/jquery/plugins-src/jquery.spin.js', async: false, dataType: 'script'});
-	
+
 	/**
 	$.ajax({url: '/msgmodule/js/jquery/plugins/jquery.ba-postmessage.js', async: false, dataType: 'script'});
 	$.postMessage(
@@ -151,19 +151,19 @@ $(document).ready(function() {
 	parent
 	);
 	***/
-	
+
 	$('#reply').button();
 	$('#archive').button();
 	$('#close').button();
-	
+
 	if( MsgingMod.sCrrntContentType == "commhstry" ){
 		$("#msg_actions .write").hide();
 	}
-	
+
 	//if( MsgingMod.sCrrntContentType == "notes" ){
 	//	$("#archive").hide();
 	//}
-	
+
 	// initialize Archive Message dialog as jQuery UI dialog box
 	$( "#archive_msg" ).dialog({
 		autoOpen: false,
@@ -187,7 +187,7 @@ $(document).ready(function() {
 				var msgId = $('#msg_id').val();
 				var oMsg = new Message();
 				getMsgDict(msgId,oMsg);
-				
+
 				alert("message_text is: "+oMsg['message_text']);
 				alert("Msg Subject is: "+jsonData.msg_dict['message_subject']);
 				alert("Msg ID is: "+jsonData.msg_dict['message_id']);
@@ -202,7 +202,7 @@ $(document).ready(function() {
 			// any clean-up actions required
 		}
 	});
-	
+
 	// initialize Compose Message form as jQuery UI dialog box
 	$( "#msg_compose" ).dialog({
 		autoOpen: false,
@@ -262,7 +262,7 @@ $(document).ready(function() {
 			// any clean-up actions required
 		}
 	});
-	
+
 	$( "#tag_msg" ).dialog({
 		autoOpen: false,
 		height: 200,
@@ -271,11 +271,11 @@ $(document).ready(function() {
 		buttons: {
 			"OK": function() {
 				var actionRqd = 'Y'; //defaults to 'Y' on assumption that msg by default requires action unless manually cleared by annotator
-				var readStatus = 'Y'; //defaults to 'Y' on assumption that msg cannot be selected for tagging unless already "read" 
+				var readStatus = 'Y'; //defaults to 'Y' on assumption that msg cannot be selected for tagging unless already "read"
 				var forRelease = 'N'; //defaults to 'N' on assumption that msg cannot be selected for tagging unless already "read"
 				$('#tag_msg :checkbox:checked').each(function() {
 			    	value = $(this).val();
-			    	
+
 			    	if( value == "no_action_reqd" ){
 			    		actionRqd = "N";
 			    	}
@@ -295,7 +295,7 @@ $(document).ready(function() {
 				else{
 					$('.get_drafts').trigger('click');
 				}
-				
+
 			},
 			Cancel: function() {
 				$( "#tag_msg" ).dialog( "close" );
@@ -306,11 +306,11 @@ $(document).ready(function() {
 			// any clean-up actions required
 		}
 	});
-	
+
 	confirmAvailFiles();
-	
+
 	getFilesReferenced();
-	
+
 	if( MsgingMod.sCrrntContentType == "notes"){
 		$('h2').css("color","purple");
 		$('h3').css("color","purple");
@@ -321,26 +321,26 @@ $(document).ready(function() {
 	}
 	//window.opener.alert("hello");
 	//$(".get_drafts",window.opener.document).trigger('click');
-	
+
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////BEGIN: EVENT HANDLERS ////////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	$('#reply').click( function() {
 		var oMsg = new Message();
 		getMsgDict(MsgingMod.sCrrntMsgId,oMsg);
 		composeMsg("RE: "+oMsg.message_subject, oMsg.message_id, oMsg.message_text, oMsg.sender, oMsg.timestamp, undefined );
 	});
-	
+
 	$('#archive').click( function() {
 		$('#archive_msg_target_depid').val(MsgingMod.sDepId);
 		$('#archive_msg').dialog("open");
 	});
-	
+
 	$('#close').click( function() {
 		closeWndw();
 	});
-	
+
 	$('.compose').click(function() {
 		if( MsgingMod.sViewContext == "drafts" ){
 			MsgingMod.bNewDraftContext = true;
@@ -350,7 +350,7 @@ $(document).ready(function() {
 		var tmpltStyle = ($(this).attr('id').split("_"))[1];
 		composeMsg(undefined,undefined,undefined,undefined,undefined,tmpltStyle);
 	});
-    
+
     $(".clearfile").on("click", function(event){
     	var indx = $(this).attr('id').split("clear")[1];
 		clearFileUpload(indx);
@@ -360,8 +360,8 @@ $(document).ready(function() {
     	var indx = $(this).attr('id').split("addanother")[1];
     	$("#aux-file-span"+(parseInt(indx)+1)).show();
     });
-    
-    
+
+
 	// Below fix found necessary to address issue with [ENTER] key reloading entire page when jQuery UI modal dialog active.
 	// Code sourced from: http://codingrecipes.com/jquery-ui-dialog-and-the-enter-return-key-problem
 	$("#other-value-form").find('input').keypress(function(e) {
@@ -370,8 +370,8 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-    
-	
+
+
     $('#select_all_file_references').on("click", function() {
     	//alert(this.checked);
     	$('#msg_compose_assoc_files').find('input[type=checkbox]:visible').prop('checked', this.checked);
@@ -383,11 +383,11 @@ $(document).ready(function() {
     		$('#select_all_file_references').prop('checked', this.checked);
     	}
     });
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////END: EVENT HANDLERS ////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////        
-    
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /***
      if( MsgingMod.sPdbId == "[NOT AVAILABLE]" || MsgingMod.sPdbId == "[none listed]"){
     	if( MsgingMod.bEmbeddedView ){
@@ -409,7 +409,7 @@ $(document).ready(function() {
 function closeWndw() {
 	var browserFlavor = navigator.appName;
 	var indexIEflavor = browserFlavor.indexOf('Explorer');
-	
+
 	if( indexIEflavor > 0 ) { // if this is an IE browser
 		var indexIEvrsn = navigator.userAgent.indexOf('MSIE') + 5;
 	    var IEversion = navigator.userAgent.substring(indexIEvrsn, indexIEvrsn + 1);
@@ -440,7 +440,7 @@ function constrainTagChoices(){
 	    selectedVal = selected.val();
     	//alert(selectedVal);
 	}
-    
+
     if( selectedVal.length > 0 ){
     	$("input[name='tag_msg'][value='"+selectedVal+"']").prop("disabled",false);
     	$("input[name='tag_msg'][value!='"+selectedVal+"']").prop("disabled",true);
@@ -452,7 +452,7 @@ function constrainTagChoices(){
 }
 
 function promptForMsgTags(thisRow){
-	
+
 	if( MsgingMod.sCrrntContentType == "msgs"){
 		// do stuff here instead of normal context menu
 		var readStatus = 'N';
@@ -488,7 +488,7 @@ function promptForMsgTags(thisRow){
 			}
 		}
 	}
-	
+
 }
 
 function getFilesReferenced(){
@@ -500,7 +500,7 @@ function getFilesReferenced(){
         success: function(jsonData) {
         	if( jsonData ){
         		MsgingMod.oFilesRfrncd = jsonData.files_rfrncd;
-        		
+
         		/*** FOR DEBUGGING
         		var names = "";
         		for(var property in MsgingMod.oFilesRfrncd){
@@ -509,7 +509,7 @@ function getFilesReferenced(){
         		}
         		alert(names);
         		**/
-        		
+
         	}
         }
     });
@@ -522,7 +522,7 @@ function confirmAvailFiles(){
         	if( jsonData ){
         		MsgingMod.arrAvailFiles = jsonData.file_list;
         		//alert('MsgingMod.arrAvailFiles is: '+MsgingMod.arrAvailFiles);
-        		//alert('MsgingMod.arrAvailFiles[0] is: '+MsgingMod.arrAvailFiles[0]);			
+        		//alert('MsgingMod.arrAvailFiles[0] is: '+MsgingMod.arrAvailFiles[0]);
         	}
         }
     });
@@ -530,7 +530,7 @@ function confirmAvailFiles(){
 }
 
 function Message(){
-	
+
 	this.loadFromJson = function(json){
 		this.message_subject = json.message_subject;
 		this.message_id = json.message_id;
@@ -542,7 +542,7 @@ function Message(){
 
 }
 
-	
+
 function clearFileUpload(index){
 	//<input type='file' size='50' id="aux-file2" name="aux-file2" class="c_%(identifier)s file_upload fltlft"/>
 	if( index == "all" ){
@@ -556,12 +556,12 @@ function clearFileUpload(index){
 
 
 function resetTextArea(tmpltStyle){
-	
-	$("#msg_compose_body").replaceWith( $("#msg_compose_body_tmplt_"+tmpltStyle).clone().attr('id', 'msg_compose_body').removeClass("displaynone") );	
+
+	$("#msg_compose_body").replaceWith( $("#msg_compose_body_tmplt_"+tmpltStyle).clone().attr('id', 'msg_compose_body').removeClass("displaynone") );
 }
 
 function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMsgDateTime, tmpltStyle ){
-	
+
 	if( MsgingMod.sCrrntContentType == "notes"){
 		$('#msg_compose_body').val("");
 	}
@@ -573,7 +573,7 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 		}
 		confirmAvailFiles();
 	}
-	
+
 	if( parentMsgId && (typeof(parentMsgId) != "undefined") ){
 		$('#msg_compose_parent_msg_id').val(parentMsgId);
 	}
@@ -598,7 +598,7 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 	}else if( MsgingMod.sCrrntContentType != "notes"){
 		$('#msg_compose_subject').val('Communication regarding PDB ID '+MsgingMod.sPdbId);
 	}
-	
+
 	if( parentMsg && (typeof(parentMsg) != "undefined") ){
 		$('#msg_compose_parent_msg_div').show();
 		$('#msg_compose_parent_msg').html('<p><span class="strong">SENDER:</span> '+parentMsgSnder+'</p><p><span class="strong">DATE/TIME:</span> '+parentMsgDateTime+'</p><p>'+parentMsg+'</p>');
@@ -610,36 +610,36 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 	if( MsgingMod.sCrrntContentType == "notes"){
 		$('#msg_compose_assoc_files').hide();
 		$('#msg_compose_attch_aux_file').hide();
-		
+
 	}else{
 		$('#msg_compose_assoc_files').show();
 		$('#msg_compose_attch_aux_file').show();
 	}
-	
+
 	$('#msg_compose_dep_id').val(MsgingMod.sCrrntDataSetID);
 
 	$('#msg_compose_assoc_files input:checkbox').prop('checked',false);
 	$("#msg_compose").dialog( "open" );
 	$("#msg_compose_body").width($("#msg_compose").width() - 25);
-	
+
 	$("#msg_compose").dialog({
 		resize: function() {
 			$("#msg_compose_body").width($("#msg_compose").width() - 25);
 		}
 	});
-	
+
 	for( var x=0; x < MsgingMod.arrAvailFiles.length; x++){
 		$('#checkbox_'+MsgingMod.arrAvailFiles[x]).show();
 	}
-    
+
 	$('#msg_compose_subject').focus();
-	
+
 	$('span.ui-dialog-title').css("color","white");
 	$('#msg_compose_body').scrollTop( 0 );
 	clearFileUpload("all");
 	$("#aux-file-span2").hide();
 	$("#aux-file-span3").hide();
-	
+
 	/**
 	if( AUTO_CHECK_ALL_FILE_REFS == 'y' ){
 		//alert("auto referencing all files");
@@ -649,7 +649,7 @@ function composeMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentM
 	if( typeof(tmpltStyle) != "undefined" && ['vldtn','release-publ','release-nopubl'].indexOf(tmpltStyle) > -1 ){
 		$('#msg_compose_assoc_files').find('input[type=checkbox]:visible:not(.nmr)').prop('checked', true);
 	}
-	
+
 
 }
 
@@ -661,13 +661,13 @@ function displayDraftMsg(thisRow){
     var sSender = $(nTds[1]).text();
     var sTimeStamp = $(nTds[2]).text();
     var iPos = MsgingMod.oDataTable.fnGetPosition(thisRow); // getting the clicked row position
-    // for below fields which are hidden, we need to use DataTables API function, fnGetData(iPos) to access hidden fields by javascript property name 
+    // for below fields which are hidden, we need to use DataTables API function, fnGetData(iPos) to access hidden fields by javascript property name
     // e.g. for message body we get the value of the 6th (invisible) column, which we reference by property name of "message_text",
-    var sMsgBody = MsgingMod.oDataTable.fnGetData(iPos).message_text; 
+    var sMsgBody = MsgingMod.oDataTable.fnGetData(iPos).message_text;
     var sMsgId = MsgingMod.oDataTable.fnGetData(iPos).message_id;
     var sOrdinalId = MsgingMod.oDataTable.fnGetData(iPos).ordinal_id;
     var sParentMsgId = MsgingMod.oDataTable.fnGetData(iPos).parent_message_id;
-    
+
     /**
     alert("iPos is: "+iPos);
     alert("sMsgBody is: "+sMsgBody);
@@ -680,7 +680,7 @@ function displayDraftMsg(thisRow){
     alert( $(nTds[2]).text() ); //column index is "visible" column index
     **/
     $('#msg_compose_msg_id').val(sMsgId);
-    
+
     if( sParentMsgId != sMsgId ){
     	var prntMsg = new Message();
         getMsgDict(sParentMsgId,prntMsg);
@@ -688,7 +688,7 @@ function displayDraftMsg(thisRow){
     }else{
     	composeMsg(sSubject, undefined, undefined, undefined, undefined, undefined );
     }
-    
+
     markMsgAsRead(sMsgId);
     $('#msg_compose_body').val( sMsgBody.replace(/<br \/>/g,"\n") );
 }
@@ -696,16 +696,16 @@ function displayDraftMsg(thisRow){
 function getFileReferences(sMsgId){
     var arrFilesRfrncd = [];
     var returnObjList = [];
-    
+
     for(var property in MsgingMod.oFilesRfrncd){
     	//alert("MsgingMod.oFilesRfrncd["+property+"] = "+MsgingMod.oFilesRfrncd[property]);
-    	
+
 		if( property == sMsgId ){
 			arrFilesRfrncd = MsgingMod.oFilesRfrncd[property];
 			break;
 		}
 	}
-    
+
     if( arrFilesRfrncd.length > 0 ){
     	for(var i=0; i < arrFilesRfrncd.length; i++ ){
     		var fileRefObj = arrFilesRfrncd[i];
@@ -719,7 +719,7 @@ function getFileReferences(sMsgId){
 }
 
 function getMsgDict(msgId,oMsg){
-	
+
 	$('#hlprfrm').ajaxSubmit({url: MsgingMod.URL.GET_MSG, async: false, clearForm: false,
         dataType: 'json',
         beforeSubmit: function (formData, jqForm, options) {
@@ -775,7 +775,7 @@ function submitNewMsg(sendStatusToUse) {
 	var hostname = document.location.hostname;
 	//hostname being captured and sent to server so that server-side code can determine whether in production vs. staging vs. testing environments
 	//DEBUG: alert(hostname);
-	
+
 	var bSuccess = false;
 	$('#msg_compose_frm').ajaxSubmit({url: sUrl, async: false, clearForm: false,
 		beforeSubmit: function( formData, jqForm, options ){
@@ -790,22 +790,23 @@ function submitNewMsg(sendStatusToUse) {
 		success: function(jsonObj) {
 			// alert('jsonObj.success is: '+jsonObj.success);
 			if(jsonObj.success == "true"){
-				getFilesReferenced(); 
+				getFilesReferenced();
 				//being called here because action of sending new message may add to list of files referenced
 				//and so we should refresh to get latest inventory of files referenced
-				
+
 				bSuccess = true;
-				
+
 				try{
 					if( String(jsonObj.pdbx_model_updated) == "true"){
 						//if model file was associated with message then we need to ask DEP UI to reset itself
+						alert("CKP2");
 					        dodepuireset(document, MsgingMod.sDepId, jsonData.depui_pwd, false);
 					}else if( String(jsonObj.pdbx_model_updated) == "false"){
 						//alert("AnnotCommUI says: no annotate-model file being generated.");
 					}
 				}
 				catch(err){
-					alert("Problem when application made request to have DEP UI reset.");
+					alert("Problem when application made request to have DEP UI reset. Error is"+err.message);
 				}
 
         	}
@@ -818,11 +819,11 @@ function submitNewMsg(sendStatusToUse) {
 				if( sAppendMsg.length > 1 ){
 					sAlert = sAlert + " " + sAppendMsg;
 				}
-				
+
 				alert(sAlert);
-				
+
 			}
-			 
+
     	}
 	});
 	return bSuccess;
@@ -831,7 +832,7 @@ function submitNewMsg(sendStatusToUse) {
 function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMsgDateTime, actionType ){
 	var sUrl = (actionType == "archive") ? MsgingMod.URL.ARCHIVE_MSG : MsgingMod.URL.FORWARD_MSG;
 	var targetDepId = (actionType == "archive") ? $("#archive_msg_target_depid").val() : $("#forward_msg_target_depid").val();
-	
+
 	var hostname = document.location.hostname;
 	//hostname being captured and sent to server so that server-side code can determine whether in production vs. staging vs. testing environments
 	//DEBUG: alert(hostname);
@@ -841,14 +842,14 @@ function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, paren
     	var commaSep = "";
     	for(var i=0; i < arrFileRefObjs.length; i++ ){
     		var fileRefObj = arrFileRefObjs[i];
-    		var displayUploadFlName = (fileRefObj.upload_file_name.length > 1) ? ' ('+fileRefObj.upload_file_name+')' : ""; 
+    		var displayUploadFlName = (fileRefObj.upload_file_name.length > 1) ? ' ('+fileRefObj.upload_file_name+')' : "";
     		if( i>0 ){
     			commaSep = ", ";
     		}
     		fileRefsStr += commaSep+fileRefObj.file_name+displayUploadFlName;
-    	}		
+    	}
     }
-	
+
 	var message = "ORIG MESSAGE SENDER: "+parentMsgSnder+"\nORIG MESSAGE DATETIME: "+parentMsgDateTime+"\n\nORIG MESSAGE BODY:\n\n"+parentMsg+"\n\nORIG FILE REFERENCES: "+fileRefsStr;
 	//alert("#"+actionType+"_msg");
 	$('#hlprfrm').ajaxSubmit({url: sUrl, async: false, clearForm: false, type: 'POST',
@@ -867,7 +868,7 @@ function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, paren
 			formData.push({"name": "orig_date", "value": parentMsgDateTime} );
 			formData.push({"name": "orig_subject", "value": msgSubject} );
 			formData.push({"name": "orig_attachments", "value": fileRefsStr} );
-			
+
 		},
 		success: function(jsonObj) {
 			//alert('jsonObj.success is: '+jsonObj.success);
@@ -881,7 +882,7 @@ function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, paren
 						if( jsonObj.success[property] == "error" ){
 							alert("An application error has occurred while executing this request.");
 							bPrblmFound = true;
-						}						
+						}
 					}else{
 						// if here then current property represents success status for a given dep ID
 						if( jsonObj.success[property] == "false" ){
@@ -896,9 +897,8 @@ function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, paren
 					$("#msg_body_display").dialog("close");
 				}
         	}
-			 
+
     	}
 	});
-	
-}
 
+}
