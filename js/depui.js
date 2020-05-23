@@ -129,7 +129,7 @@ function wfm_milestone_reset(sessionid, depID) {
       'type': 'POST',
       'data': { 'sessionid': sessionid, 'identifier': depID },
       'url': '/service/workmanager/milestonereset',
-  })
+  });
 }
 
 
@@ -144,7 +144,7 @@ function logout_depui(logouturl, csrftoken) {
         'type': 'POST',
         'data': {},
         'url': logouturl,
-      })
+      });
     }
 
 function login_depui(loginurl, depID, token, csrftoken) {
@@ -191,20 +191,20 @@ function promise_dodepuireset(sessionid, depID, warning_flag) {
        var token = getpasswordcall(sessionid, depID);
 
        // Some promise functions
-       let dologout = function() {
+       var dologout = function() {
          //console.log("About to logout");
          return logout_depui(logout, csrftoken);
-       }
+       };
 
-       let dologin = function() {
-         //console.log("About to login");
-         return login_depui(login, depID, token, csrftoken)
-       }
+       var dologin = function() {
+         console.log("About to login");
+         return login_depui(login, depID, token, csrftoken);
+       };
 
-       let doreset = function() {
+       var doreset = function() {
          //console.log("About to reset");
-         return reset_depui(action, csrftoken)
-       }
+         return reset_depui(action, csrftoken);
+       };
 
 
        // Final error check promise hander
@@ -215,7 +215,7 @@ function promise_dodepuireset(sessionid, depID, warning_flag) {
             }
           // Return for promise
           return null;
-        };
+        }
 
 
         var success = true;
@@ -276,6 +276,6 @@ function promise_dodepuireset(sessionid, depID, warning_flag) {
             success = false;
           })
 
-        .then(function () {final_check(success, warning_flag)}, function (){final_check(success, warning_flag)});
+        .then(function () {final_check(success, warning_flag);}, function (){final_check(success, warning_flag);});
 
 }
