@@ -477,14 +477,14 @@ function rerunWF(sessionid, depID, initials) {
 }
 
 function editCif(sessionid, depID, instID, classID, method, initials) {
-       var confirm_message = 'Viewing the CIF file will kill the WF for ' + depID + '. You will have to restart the WF youself - '
-                           + 'do you want to continue ?';
+       var confirm_message = 'Viewing the CIF file will kill the WF for ' + depID + '. You will have to restart the WF youself - ' +
+                             'do you want to continue ?';
        var data = { 'sessionid': sessionid, 'identifier': depID, 'annotator': initials };
        var url  = '/service/workmanager/killworkflow';
        var return_status = make_ajax_call(confirm_message, 'GET', data, url, true);
        if (return_status == 'OK') {
-            url = '/service/editor/new_session/wf?identifier=' + depID + '&instance=' + instID + '&filesource=archive&classID=' + classID
-                + '&context=summaryreport&expmethod=' + method + '&annotator=' + initials;
+            url = '/service/editor/new_session/wf?identifier=' + depID + '&instance=' + instID + '&filesource=archive&classID=' + classID +
+                  '&context=summaryreport&expmethod=' + method + '&annotator=' + initials;
             window.open(url, '_blank');
        }
 }
