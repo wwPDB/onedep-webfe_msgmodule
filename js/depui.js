@@ -29,20 +29,8 @@ function get_base_url() {
     return url;
 }
 
-
-function dodepuistatus(sessionid, depID, orig_stat) {
-    var stat = orig_stat;
-    if (orig_stat == 'unlock_with_rest') {
-        stat = 'unlock';
-    }
-    if (stat == 'lock') {
-        if (!confirm('Are you sure you want to do this, it will prevent the depositor using the depUI')) return;
-    } else if (stat == 'unlock') {
-        if (!confirm('Are you sure you want to do this, it will allow the depositor to edit data in the depUI')) return;
-    }
-    if (orig_stat == 'unlock_with_rest') {
-        promise_dodepuireset(sessionid, depID, false);
-    }
+function internal_dodepuistatus_cb(sessionid, depID, stat) {
+    // Returns a promise to set status of entry
 
     if (!is_valid_ID(depID)) return;
     var url = get_base_url();
@@ -55,72 +43,112 @@ function dodepuistatus(sessionid, depID, orig_stat) {
 
     var success = true;
 
-    $.when(
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': logout,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here logout...' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {
-                    'depID': depID,
-                    'token': token
-                },
-                'url': login,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here login...' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': action,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here ' + stat + ' ...' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': logout,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here logout2...' + xhr.status);
-                    success = false;
-                },
-            })
-        )
+    // Some promise functions
+    var dologout = function() {
+        console.log("About to logout in CB");
+        return logout_depui(logout, csrftoken);
+    };
+
+    var dologin = function() {
+        console.log("About to login in CB");
+        return login_depui(login, depID, token, csrftoken);
+    };
+
+    var doaction = function() {
+        console.log("About to action in CB");
+        return login_depui(action, csrftoken);
+    };
+    // Final error check promise hander
+    function final_check_cb(success) {
+        console.log("promised cb complete:" + success);
+        if (success) {
+            alert('Successfully changed status of depUI to ' + stat);
+        }
+        // Return for promise
+        return null;
+    }
+
+    console.log("CB about to set status to " + stat);
+    return $.when(dologout)
+        .done(function() {})
+        .fail(function(xhr, status, e) {
+            alert('Something went wrong here with logout : ' + e);
+            success = false;
+        })
+
+        .then(dologin, dologin)
+        .done(function(data) {
+            // console.log("login ok")
+        })
+        .fail(function(xhr, textStatus, e) {
+            // console.log('login failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+        })
+
+        // Do unlocke
+        .then(doaction, doaction)
+        .done(function(data) {
+            // console.log("logout2 ok");
+        })
+        .fail(function(xhr, textStatus, e) {
+            //console.log('logout2 failed: ' + e);
+            alert('Something went wrong here in doaction : status = ' + xhr.status);
+            success = false;
+        })
+
+        // logout
+        .then(dologout, dologout)
+        .done(function(data) {
+            // console.log("logout2 ok");
+        })
+        .fail(function(xhr, textStatus, e) {
+            //console.log('logout2 failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+        })
+
+        // EIther case do final callback
         .then(function() {
-            if (success) {
-                alert('Successfully changed status of depUI to ' + stat);
-            }
+            final_check_cb(success);
+        }, function() {
+            final_check_cb(success);
         });
+}
+
+function promise_dodepuistatus(sessionid, depID, orig_stat) {
+    // Returns a promise for setting status of depui and potential unlock
+    console.log("STARTING dodepuistatus");
+    var stat = orig_stat;
+
+    var docb = function() {
+        console.log("About to invoke internal_dodepuistatus_cb");
+        return internal_dodepuistatus_cb(sessionid, depID, stat);
+    };
+
+    if (orig_stat == 'unlock_with_rest') {
+        stat = 'unlock';
+    }
+    if (stat == 'lock') {
+        if (!confirm('Are you sure you want to do this, it will prevent the depositor using the depUI')) return;
+    } else if (stat == 'unlock') {
+        if (!confirm('Are you sure you want to do this, it will allow the depositor to edit data in the depUI')) return;
+    }
+    console.log("In dodepuistatus");
+    if (orig_stat == 'unlock_with_rest') {
+        return $.when(promise_dodepuireset(sessionid, depID, false))
+            .done(function() {
+                console.log("About to CB");
+                return docb;
+            })
+            .fail(function() {
+                console.log("About to CB");
+                return docb;
+            });
+    } else {
+        return docb();
+    }
+
 }
 
 function wfm_milestone_reset(sessionid, depID) {
@@ -132,6 +160,19 @@ function wfm_milestone_reset(sessionid, depID) {
             'identifier': depID
         },
         'url': '/service/workmanager/milestonereset',
+    });
+}
+
+function action_depui(actionurl, csrftoken) {
+    // Using action, send action to depUI
+    // Returns promise
+    return $.ajax({
+        'beforeSend': function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        'type': 'POST',
+        'data': {},
+        'url': action
     });
 }
 
