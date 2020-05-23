@@ -16,7 +16,7 @@ function getCookie(name) {
 
 function is_valid_ID(depID) {
        if (depID.substring(0,3) == 'D_9') {
-            alert(" That is a validation ID ")
+            alert(" That is a validation ID ");
             return false;
        }
        return true;
@@ -29,6 +29,7 @@ function get_base_url() {
        return url;
 }
 
+
 function dodepuistatus(sessionid, depID, orig_stat) {
        var stat = orig_stat;
        if (orig_stat == 'unlock_with_rest') {
@@ -40,23 +41,24 @@ function dodepuistatus(sessionid, depID, orig_stat) {
             if (!confirm('Are you sure you want to do this, it will allow the depositor to edit data in the depUI')) return;
        }
        if (orig_stat == 'unlock_with_rest') {
-            dodepuireset(sessionid, depID, false);
+            promise_dodepuireset(sessionid, depID, false);
        }
 
        if (!is_valid_ID(depID)) return;
        var url = get_base_url();
        var csrftoken = getCookie('csrftoken');
-       var login = url + 'deposition/pageviewalt/'
+       var login = url + 'deposition/pageviewalt/';
        var logout = url + 'deposition/logout';
        var action = url + 'deposition/stage/' + stat;
 
-       var token = getpasswordcall(sessionid, depID); 
+       var token = getpasswordcall(sessionid, depID);
 
        var success = true;
+
        $.when(
             $.ajax({
                 'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
                 'type': 'POST',
                 'async': false,
@@ -70,7 +72,7 @@ function dodepuistatus(sessionid, depID, orig_stat) {
             }),
             $.ajax({
                 'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
                 'type': 'POST',
                 'async': false,
@@ -87,7 +89,7 @@ function dodepuistatus(sessionid, depID, orig_stat) {
             }),
             $.ajax({
                 'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
                 'type': 'POST',
                 'async': false,
@@ -101,7 +103,7 @@ function dodepuistatus(sessionid, depID, orig_stat) {
             }),
             $.ajax({
                 'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
                 'type': 'POST',
                 'async': false,
@@ -116,15 +118,68 @@ function dodepuistatus(sessionid, depID, orig_stat) {
        )
        .then(function() {
             if (success) {
-                alert('Successfully changed status of depUI to ' + stat)
+                alert('Successfully changed status of depUI to ' + stat);
             }
        });
 }
 
-function dodepuireset(sessionid, depID, warning_flag) {
+function wfm_milestone_reset(sessionid, depID) {
+  // Returns a promise for reset operation to perfor WF< wfm_milestone_reset
+  return $.ajax({
+      'type': 'POST',
+      'data': { 'sessionid': sessionid, 'identifier': depID },
+      'url': '/service/workmanager/milestonereset',
+  })
+}
+
+
+function logout_depui(logouturl, csrftoken) {
+  // Using logouturl, lotout of DepUI.
+  // async method
+  // Returns promise
+      return $.ajax({
+        'beforeSend': function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        'type': 'POST',
+        'data': {},
+        'url': logouturl,
+      })
+    }
+
+function login_depui(loginurl, depID, token, csrftoken) {
+    // login to Depui for depid and CSRFToken
+    // Returns promise
+                  return $.ajax({
+                    'beforeSend': function(xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    },
+                    'type': 'POST',
+                    'data': {
+                        'depID': depID,
+                        'token': token
+                    },
+                    'url': loginurl
+                  });
+}
+
+function reset_depui(actionurl, csrftoken) {
+              return $.ajax({
+                  'beforeSend': function(xhr) {
+                      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                  },
+                  'type': 'POST',
+                  'data': {},
+                  'url': actionurl,
+                  'timeout': 600000 // sets timeout to 10 minuntes
+                });
+}
+
+function promise_dodepuireset(sessionid, depID, warning_flag) {
        if (warning_flag) {
             if (!confirm('Are you sure you want to do this, it will delete all the depositors data in the depUI')) return;
        }
+       console.log("Start dodepuireset");
 
        if (!is_valid_ID(depID)) return;
        var url = get_base_url();
@@ -133,89 +188,94 @@ function dodepuireset(sessionid, depID, warning_flag) {
        var logout = url + 'deposition/logout';
        var action = url + 'deposition/stage/reset';
 
-       var token = getpasswordcall(sessionid, depID); 
+       var token = getpasswordcall(sessionid, depID);
 
-       var success = true;
+       // Some promise functions
+       let dologout = function() {
+         //console.log("About to logout");
+         return logout_depui(logout, csrftoken);
+       }
 
-       $.when(
-            $.ajax({
-                'type': 'POST',
-                'async': false,
-                'data': { 'sessionid': sessionid, 'identifier': depID },
-                'url': '/service/workmanager/milestonereset',
-                success: function(jsonOBJ) {
-                    if (jsonOBJ.errorflag) {
-                        success = false;
-                    }
-                },
-                error: function (data, status, e) {
-                    alert('Something went wrong here with milestone : ' + e);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': logout,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here : status = ' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {
-                    'depID': depID,
-                    'token': token
-                },
-                'url': login,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here... status = ' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': action,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here... status = ' + xhr.status);
-                    success = false;
-                },
-            }),
-            $.ajax({
-                'beforeSend': function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                },
-                'type': 'POST',
-                'async': false,
-                'data': {},
-                'url': logout,
-                'success': function(data) {},
-                'error': function(xhr, status) {
-                    alert('Something went wrong here... status = ' + xhr.status);
-                    success = false
-                },
-            })
-       )
-       .then(function() {
-            if (success && warning_flag) {
-                alert('Successfully wrote milestone file to deposit and issued reload')
+       let dologin = function() {
+         //console.log("About to login");
+         return login_depui(login, depID, token, csrftoken)
+       }
+
+       let doreset = function() {
+         //console.log("About to reset");
+         return reset_depui(action, csrftoken)
+       }
+
+
+       // Final error check promise hander
+       function final_check(success, warning_flag) {
+         console.log("promised_dodepuireset complete:"+success+' '+warning_flag);
+          if (success && warning_flag) {
+              alert('Successfully wrote milestone file to deposit and issued reload');
             }
-       });
+          // Return for promise
+          return null;
+        };
+
+
+        var success = true;
+
+        // Return a promise
+       return $.when(wfm_milestone_reset(sessionid, depID))
+       .done(function(jsonObj) {
+          if (jsonObj.errorflag) {
+              success = false;
+            }
+          })
+       .fail(function(data, status, e) {
+           alert('Something went wrong here with milestone : ' + e);
+           success = false;
+          })
+
+          // logout
+          .then(dologout, dologout)
+          .done(function(data) {
+            //console.log("logout ok");
+          })
+          .fail(function(xhr, textStatus, e) {
+            // console.log('logout failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+          })
+
+          // dologin
+          .then(dologin, dologin)
+          .done(function(data) {
+              // console.log("login ok")
+            })
+          .fail(function(xhr, textStatus, e) {
+            // console.log('login failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+          })
+
+          // reset_depui
+          .then(doreset, doreset)
+          .done(function(data) {
+            // console.log("reset ok")
+          })
+          .fail(function(xhr, textStatus, e) {
+            // console.log('reset failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+          })
+
+          // logout
+          .then(dologout, dologout)
+          .done(function(data) {
+              // console.log("logout2 ok");
+            })
+          .fail(function(xhr, textStatus, e) {
+            //console.log('logout2 failed: ' + e);
+            alert('Something went wrong here : status = ' + xhr.status);
+            success = false;
+          })
+
+        .then(function () {final_check(success, warning_flag)}, function (){final_check(success, warning_flag)});
+
 }
