@@ -799,8 +799,14 @@ function submitNewMsg(sendStatusToUse) {
 				try{
 					if( String(jsonObj.pdbx_model_updated) == "true"){
 						//if model file was associated with message then we need to ask DEP UI to reset itself
-						alert("CKP2");
-					        dodepuireset(document, MsgingMod.sDepId, jsonData.depui_pwd, false);
+						//This code not in use and probably does not work (password field)
+						$.when(promise_dodepuireset(document, MsgingMod.sDepId, "", false))
+								.done(function() {
+                    return bSuccess;
+								})
+								.fail(function() {
+										return bSuccess;
+								});
 					}else if( String(jsonObj.pdbx_model_updated) == "false"){
 						//alert("AnnotCommUI says: no annotate-model file being generated.");
 					}
@@ -876,7 +882,7 @@ function propagateMsg( msgSubject, parentMsgId, parentMsg, parentMsgSnder, paren
 			if(jsonObj.success){
 				//getFilesReferenced();
 				//alert("In success block.");
-				for( property in jsonObj.success ){
+				for( var property in jsonObj.success ){
 					if( property == 'job' ){
 						// if here then property represents whether or not the 'job' execution errored out
 						if( jsonObj.success[property] == "error" ){
