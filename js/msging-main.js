@@ -368,7 +368,7 @@ $(document).ready(function() {
         $("#context_menu").hide();
     });
 
-		// Unlock DepUI & Reset confirm wish to do this
+    // Unlock DepUI & Reset confirm wish to do this
     $("#unlock_depui").on("click", function() {
         // Open modal
         if (MsgingMod.sStatusCode == 'REL') {
@@ -379,11 +379,11 @@ $(document).ready(function() {
         $("#dialog-unlock-confirm").modal("show");
     });
 
-		// Unlock & reset - callback from model dialog on confirmation
+    // Unlock & reset - callback from model dialog on confirmation
     $('#tag_unlock_ok').on('click', function() {
         progressStart();
         setTimeout(function() {
-						// Will return immediately - using promise to complete or alert
+            // Will return immediately - using promise to complete or alert
             $('#hlprfrm').ajaxSubmit({
                 url: MsgingMod.URL.GET_DEPUI_PWD,
                 async: true,
@@ -391,26 +391,29 @@ $(document).ready(function() {
                 success: function(jsonData) {
                     if (jsonData) {
                         try {
-													// XXXXXXXXX ISSUE - cancel should not unlock
                             if (jsonData.depui_pwd.length > 0) {
-															$.when(promise_dodepuistatus(MsgingMod.sSessionId, MsgingMod.sDepId, 'unlock_with_rest'))
+                                $.when(promise_dodepuistatus(MsgingMod.sSessionId, MsgingMod.sDepId, 'unlock_with_rest'))
 
-																.done(function() {
-																			console.log("XXX promise depuistatus done");
-															 				progressEnd();
-																			MsgingMod.sViewContext = "sentmsgs";
-			                                MsgingMod.sCrrntContentType = "msgs";
-			                                reLoadMsgs();
-			                                composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
-														 		})
-															 		.fail(function() {
-																			console.log("XXX promise depuistatus fail done");
-																			progressEnd();
-																			MsgingMod.sViewContext = "sentmsgs";
-			                                MsgingMod.sCrrntContentType = "msgs";
-			                                reLoadMsgs();
-			                                composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
-														 		});
+                                    .done(function(data) {
+                                        console.log("promise depuistatus done" + data);
+                                        progressEnd();
+                                        if (data != "cancel") {
+                                            MsgingMod.sViewContext = "sentmsgs";
+                                            MsgingMod.sCrrntContentType = "msgs";
+                                            reLoadMsgs();
+                                            composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
+                                        }
+                                    })
+                                    .fail(function(data) {
+                                        console.log("promise depuistatus fail done" + data);
+                                        progressEnd();
+                                        if (data != "cancel") {
+                                            MsgingMod.sViewContext = "sentmsgs";
+                                            MsgingMod.sCrrntContentType = "msgs";
+                                            reLoadMsgs();
+                                            composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
+                                        }
+                                    });
                             } else {
                                 alert("Problem obtaining access to Dep UI");
                             }
