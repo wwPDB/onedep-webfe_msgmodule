@@ -56,7 +56,7 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
 
     var doaction = function() {
         console.log("About to action in CB");
-        return login_depui(action, csrftoken);
+        return action_depui(action, csrftoken);
     };
     // Final error check promise hander
     function final_check_cb(success) {
@@ -69,7 +69,7 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
     }
 
     console.log("CB about to set status to " + stat);
-    return $.when(dologout)
+    return $.when(dologout())
         .done(function() {})
         .fail(function(xhr, status, e) {
             alert('Something went wrong here with logout : ' + e);
@@ -110,9 +110,9 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
 
         // EIther case do final callback
         .then(function() {
-            final_check_cb(success);
+            return final_check_cb(success);
         }, function() {
-            final_check_cb(success);
+            return final_check_cb(success);
         });
 }
 
@@ -138,13 +138,12 @@ function promise_dodepuistatus(sessionid, depID, orig_stat) {
     if (orig_stat == 'unlock_with_rest') {
         return $.when(promise_dodepuireset(sessionid, depID, false))
             .done(function() {
-                // console.log("About to CB");
-                return docb();
+                //console.log("About to CB");
             })
             .fail(function() {
-                // console.log("About to CB");
-                return docb();
-            });
+                //console.log("About to CB");
+            })
+	    .then(docb, docb)
     } else {
         return docb();
     }
@@ -172,7 +171,7 @@ function action_depui(actionurl, csrftoken) {
         },
         'type': 'POST',
         'data': {},
-        'url': action
+        'url': actionurl
     });
 }
 
