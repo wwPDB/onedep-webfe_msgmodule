@@ -139,11 +139,11 @@ function promise_dodepuistatus(sessionid, depID, orig_stat) {
         return $.when(promise_dodepuireset(sessionid, depID, false))
             .done(function() {
                 // console.log("About to CB");
-                return docb;
+                return docb();
             })
             .fail(function() {
                 // console.log("About to CB");
-                return docb;
+                return docb();
             });
     } else {
         return docb();
