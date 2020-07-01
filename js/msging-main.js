@@ -388,6 +388,10 @@ $(document).ready(function() {
                 url: MsgingMod.URL.GET_DEPUI_PWD,
                 async: true,
                 clearForm: false,
+		error: function(res, err) {
+		    console.log("Failed to get depui password");
+		    progressEnd();
+		},
                 success: function(jsonData) {
                     if (jsonData) {
                         try {
@@ -401,6 +405,8 @@ $(document).ready(function() {
                                             MsgingMod.sViewContext = "sentmsgs";
                                             MsgingMod.sCrrntContentType = "msgs";
                                             reLoadMsgs();
+					    // console.log("Turn off progress");
+					    progressEnd();
                                             composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
                                         }
                                     })
@@ -412,6 +418,8 @@ $(document).ready(function() {
                                             MsgingMod.sCrrntContentType = "msgs";
                                             reLoadMsgs();
                                             composeMsg(undefined, undefined, undefined, undefined, undefined, 'system-unlocked');
+					    // console.log("Turn off progress");
+					    progressEnd();
                                         }
                                     });
                             } else {
@@ -420,11 +428,14 @@ $(document).ready(function() {
                         } catch (err) {
                             alert("Problem when application made request to have DEP UI reset. err=" + err.message);
                         }
-                    }
+                    } else { // Failed to get jsondata
+			console.log("Turn off progress");
+			progressEnd();
+		    }
                 }
             });
-            progressEnd();
-
+	    // Executed immediately without waiting for promise
+            // progressEnd();
         }, 1100);
     });
 
