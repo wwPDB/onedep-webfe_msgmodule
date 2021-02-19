@@ -454,7 +454,8 @@ $(document).ready(function() {
     function startSend() {
         $("#msg_compose").modal("hide");
         progressStart();
-        submitNewMsg('Y');
+	// We indicate that on error - reopen composition window
+        submitNewMsg('Y', true);
     }
 
     $('.send').on('click', function(e) {
@@ -495,7 +496,7 @@ $(document).ready(function() {
     });
 
     $('.save_draft').on('click', function() {
-        submitNewMsg('N');
+        submitNewMsg('N', false);
     });
 
     $('.archive').on('click', function() {
@@ -2632,9 +2633,10 @@ function progressEnd() {
     $("#loading").fadeOut('fast').spin(false);
 }
 
-function submitNewMsg(sendStatusToUse) {
+function submitNewMsg(sendStatusToUse, msgCompose) {
     /***
      * this function used for messages that are submitted via "Send" or "Save Draft" (i.e.as opposed to "Archive" (or future implementation of "Forward")
+     * if an error in sending happens, if msgCompose is true, reopen composition window
      **/
     var sUrl;
     // alert("sendStatusToUse: "+sendStatusToUse);
@@ -2733,6 +2735,12 @@ function submitNewMsg(sendStatusToUse) {
                 }
 
                 alert(sAlert);
+
+		// Stop spinner
+                progressEnd();
+		if (msgCompose === true) {
+		    $("#msg_compose").modal("show");
+		}
 
             }
 
