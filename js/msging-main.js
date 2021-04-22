@@ -2223,6 +2223,7 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
                 ["val-report-full", "full PDF report"],
                 //["Garbage", "Garbage"],
                 ["val-data", "XML data"],
+                ["val-data-cif", "CIF data"],
                 ["val-report-slider", "slider"],
                 ["val-report-wwpdb-fo-fc-edmap-coef", "fofc map coef"],
                 ["val-report-wwpdb-2fo-fc-edmap-coef", "2fofc map coef"]
