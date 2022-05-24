@@ -2208,6 +2208,8 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
             //$('#msg_compose_assoc_files').find('input[type=checkbox]:visible:not(.nmr)').prop('checked', true);
         } else if (typeof(tmpltStyle) != "undefined" && ['withdrawn'].indexOf(tmpltStyle) > -1) {
             $('#checkbox_model').find('input[type=checkbox]:visible').prop('checked', true);
+	    // Should only set if SF file present
+            $('#checkbox_sf').find('input[type=checkbox]:visible').prop('checked', true);
         } else {
             $('#msg_compose_assoc_files input:checkbox').prop('checked', false);
         }
