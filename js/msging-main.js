@@ -68,6 +68,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 2016-09-13, RPS: Updates to support dedicated enabling/disabling of flag for note/emails flagged from BMRB
 					Allowing option of tagging message as read/unread from tag pop-up menu available from message view panel and message view dialog.
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
+2022-05-31, CS:  Update withdrawn message title for EM map-only entries
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -2154,7 +2155,7 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'system-unlocked') {
         $('#msg_compose_subject').val('System Unlocked');
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'withdrawn') {
-        $('#msg_compose_subject').val('PDB ID ' + MsgingMod.sPdbId + ' has been withdrawn');
+        $('#msg_compose_subject').val(MsgingMod.sAccessionIdString + ' has been withdrawn'); // CS 2022-05-31
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'maponly-authstatus-em') {
         $('#msg_compose_subject').val('Annotation of your ' + MsgingMod.sAccessionIdString);
     } else if (MsgingMod.sCrrntContentType != "notes") {
