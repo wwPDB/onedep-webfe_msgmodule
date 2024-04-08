@@ -69,6 +69,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 					Allowing option of tagging message as read/unread from tag pop-up menu available from message view panel and message view dialog.
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
 2022-05-31, CS:  Update withdrawn message title for EM map-only entries
+2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -2659,6 +2660,19 @@ function submitNewMsg(sendStatusToUse, msgCompose) {
         clearForm: false,
         beforeSubmit: function(formData, jqForm, options) {
             //formData.push({"name": "parent_msg", "value": $('#msg_compose_parent_msg').html()});
+	    //CS 2024-04-04 start, add context_type and context_value
+            formData.push({
+                "name": "context_type",
+                "value": MsgingMod.sCrrntCmpsMsgTmplt
+            });
+	    //context_type recorded based on users' selection of from message compose drop-down list, namely:
+	    //default,vldtn,approval-expl,approval-impl,reminder,release-publ,release-nopubl,system-unlocked,withdrawn
+	    formData.push({
+		"name": "context_value",
+		"value": ""
+	    });
+	    //context_value is set as empty string, and edited in backend python code based on message text
+	    //CS 2024-04-04 end
             formData.push({
                 "name": "send_status",
                 "value": sendStatusToUse
