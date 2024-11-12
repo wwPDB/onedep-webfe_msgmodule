@@ -70,7 +70,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
 2022-05-31, CS:  Update withdrawn message title for EM map-only entries
 2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
-2024-11-12, CS:  remove unlock confirmation button
+2024-11-12, CS:  remove unlock confirmation do-nothing button
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
