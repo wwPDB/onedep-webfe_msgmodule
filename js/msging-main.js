@@ -70,6 +70,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
 2022-05-31, CS:  Update withdrawn message title for EM map-only entries
 2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
+2024-11-12, CS:  remove unlock confirmation do-nothing button
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -375,9 +376,9 @@ $(document).ready(function() {
         // Open modal
         if (MsgingMod.sStatusCode == 'REL') {
             $("#dialog-unlock-body").html("<p style='color:red;text-align:center;'>WARNING -- WARNING -- WARNING -- WARNING -- WARNING</p><p>This entry has already been <span style='color:red;'>RELEASED</span>!!!</p><p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
-        } else {
-            $("#dialog-unlock-body").html("<p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
-        }
+        } //else {
+        //    $("#dialog-unlock-body").html("<p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
+        //}
         $("#dialog-unlock-confirm").modal("show");
     });
 
