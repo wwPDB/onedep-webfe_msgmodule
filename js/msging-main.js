@@ -376,10 +376,10 @@ $(document).ready(function() {
         // Open modal
         if (MsgingMod.sStatusCode == 'REL') {
             $("#dialog-unlock-body").html("<p style='color:red;text-align:center;'>WARNING -- WARNING -- WARNING -- WARNING -- WARNING</p><p>This entry has already been <span style='color:red;'>RELEASED</span>!!!</p><p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
+	    $("#dialog-unlock-confirm").modal("show");
         } //else {
         //    $("#dialog-unlock-body").html("<p>Click on OK to confirm that you do wish to reset and unlock the Dep UI for this entry.</p>");
         //}
-        $("#dialog-unlock-confirm").modal("show");
     });
 
     // Unlock & reset - callback from model dialog on confirmation
