@@ -58,15 +58,17 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
         console.log("About to action in CB");
         return action_depui(action, csrftoken);
     };
-    // Final error check promise hander
-    function final_check_cb(success) {
-        console.log("promised cb complete:" + success);
-        if (success) {
-            alert('Successfully changed status of depUI to ' + stat);
-        }
-        // Return for promise
-        return null;
-    }
+    
+    // // Final error check promise hander
+    // CS 2024-11-14 comment out confirmation pop up function
+    // function final_check_cb(success) {
+    //     console.log("promised cb complete:" + success);
+    //     if (success) {
+    //         alert('Successfully changed status of depUI to ' + stat);
+    //     }
+    //     // Return for promise
+    //     return null;
+    // }
 
     console.log("CB about to set status to " + stat);
     return $.when(dologout())
@@ -107,6 +109,14 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
             alert('Something went wrong here : status = ' + xhr.status);
             success = false;
         });
+    
+        // // EIther case do final callback 
+        // CS 2024-11-14 comment out confirmation pop up
+        // .then(function() {
+        //     return final_check_cb(success);
+        // }, function() {
+        //     return final_check_cb(success);
+        // });
 }
 
 function promise_dodepuistatus(sessionid, depID, orig_stat) {
