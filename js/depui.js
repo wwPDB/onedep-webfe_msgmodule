@@ -106,13 +106,6 @@ function internal_dodepuistatus_cb(sessionid, depID, stat) {
             //console.log('logout2 failed: ' + e);
             alert('Something went wrong here : status = ' + xhr.status);
             success = false;
-        })
-
-        // EIther case do final callback
-        .then(function() {
-            return final_check_cb(success);
-        }, function() {
-            return final_check_cb(success);
         });
 }
 
