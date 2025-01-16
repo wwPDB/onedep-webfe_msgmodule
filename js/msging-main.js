@@ -70,7 +70,8 @@ JavaScript supporting wwPDB Messaging Module web interface
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
 2022-05-31, CS:  Update withdrawn message title for EM map-only entries
 2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
-2024-11-12, CS:  remove unlock confirmation do-nothing button
+2024-11-12, CS:  Simplify remove unlock confirmation steps
+2025-01-15, CS:  Add warning for unlocked a REL/OBS/WDRN/POLC entry
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -371,9 +372,23 @@ $(document).ready(function() {
         $("#context_menu").hide();
     });
 
+    // Unlock DepUI & Reset confirmation for entries released or at another special status; 2025-01-15 CS
+    $("#unlock_depui").on("click", unlock_check_status);
+    function unlock_check_status(){
+        if (['REL', 'OBS', 'WDRN', 'POLC'].includes(MsgingMod.sStatusCode)) {
+            $("#dialog-unlock-body").html("<p style='color:red;text-align:left;'>WARNING! ALERT!! DANGEROUS!!! Entry status is "
+					  + MsgingMod.sStatusCode
+					  + "</p><p>Click OK to confirm unlocking DepUI for this "
+					  + MsgingMod.sStatusCode + " entry.</p>");
+	    $("#dialog-unlock-confirm").modal("show");
+        } else {
+            unlock_action();
+        }
+    }
 
-    // Unlock & reset - callback from model dialog on confirmation
-    $('#unlock_depui').on('click', function() {
+    // Unlock & reset - callback from model dialog on confirmation for special status
+    $('#tag_unlock_ok').on('click', unlock_action);
+    function unlock_action(){
         progressStart();
         setTimeout(function() {
             // Will return immediately - using promise to complete or alert
@@ -430,7 +445,7 @@ $(document).ready(function() {
 	    // Executed immediately without waiting for promise
             // progressEnd();
         }, 1100);
-    });
+    }
 
     $(".modal-wide").on("show.bs.modal", function() {
         var height = $(window).height() - 100;
