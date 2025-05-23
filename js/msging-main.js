@@ -72,6 +72,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
 2024-11-12, CS:  Simplify remove unlock confirmation steps
 2025-01-15, CS:  Add warning for unlocked a REL/OBS/WDRN/POLC entry
+2025-05-23, CS:  Add more tag handling on i_clear_tags and c_clear_action
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -331,6 +332,21 @@ $(document).ready(function() {
         promptForMsgTags(selectedRow, "msgbody_visible");
     });
 
+    $('.c_clear_action').on('click', function() {
+        var selectedRow = $('#rslts #' + MsgingMod.sCrrntDataSetID + '_tbl #' + MsgingMod.sCrrntRowSlctd)[0];
+        $(selectedRow).removeClass('action_reqd');
+        $(selectedRow).addClass('no_action_reqd');
+	var actionRqd = "N";
+	var readStatus = "Y";
+	var forRelease = "N";
+	if ($(selectedRow).hasClass('for_release')) {
+	    forRelease = "Y";
+            tagMsg(actionRqd, readStatus, forRelease);
+	} else {
+            tagMsg(actionRqd, readStatus, forRelease);
+            $(selectedRow).find("td:first").css("background", "none");
+	}
+    });
 
     $('#archive_msg_ok').on('click', function() {
         var msgId = MsgingMod.sCrrntMsgIdSlctd;
@@ -730,9 +746,17 @@ $(document).ready(function() {
             displayMsg(selectedRow, true);
             var rowId = $(selectedRow).attr("id");
             $('#rslts #' + MsgingMod.sCrrntDataSetID + '_tbl #' + rowId).addClass('msg_read');
-        }
+        } else if (action == "i_clear_tags") {
+            $(selectedRow).removeClass('action_reqd');
+            $(selectedRow).addClass('no_action_reqd');
+	    $(selectedRow).removeClass('for_release');
+	    var actionRqd = "N";
+	    var readStatus = "Y";
+	    var forRelease = "N";
+	    tagMsg(actionRqd, readStatus, forRelease);
+            $(selectedRow).find("td:first").css("background", "none");
+	}
         $("#context_menu").hide();
-
     });
 
     $("#rslts").on("dblclick", "tbody tr", function(e) {
