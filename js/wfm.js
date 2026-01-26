@@ -165,7 +165,7 @@ function valid_entry_ids(input_ids) {
        var pattern_4 = /[1-9][A-Za-z][A-Za-z0-9]{2}/;
        var pattern_4_test = /[A-Za-z0-9]{4}/;
        var pattern_5 = /\d{5}/;
-       var pattern_emd = /[Ee][Mm][Dd]-\d{4,6}/;
+       var pattern_emd = /[Ee][Mm][Dd]-\d{4,}/;
        var pattern_9 = /[Gg]_\d{7}/;
        var pattern_10 = /\d{10}/;
        var pattern_12 = /[Dd]_\d{10}/;
@@ -197,12 +197,12 @@ function valid_entry_ids(input_ids) {
                       if (output_ids != '') output_ids += ',';
                       output_ids += list[i].toUpperCase();
                  }
+            } else if (list[i].length >= 10 && pattern_emd.test(list[i])) {
+                 is_valid_id = true;
+                 if (output_ids != '') output_ids += ',';
+                 output_ids += list[i].toUpperCase();
             } else if (list[i].length == 10) {
-                 if (pattern_emd.test(list[i])) {
-                      is_valid_id = true;
-                      if (output_ids != '') output_ids += ',';
-                      output_ids += list[i].toUpperCase();
-                 } else if (pattern_10.test(list[i])) {
+                 if (pattern_10.test(list[i])) {
                       is_valid_id = true;
                       if (output_ids != '') output_ids += ',';
                       output_ids += 'D_' + list[i];
