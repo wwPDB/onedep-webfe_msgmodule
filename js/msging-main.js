@@ -69,6 +69,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 					Allowing option of tagging message as read/unread from tag pop-up menu available from message view panel and message view dialog.
 2017-08-18, RPS: Accommodating updates in behavior for "withdrawn" letter template
 2022-05-31, CS:  Update withdrawn message title for EM map-only entries
+2026-05-20, DAOTHER-10451: Use plural "have been withdrawn" when multiple accession IDs
 2024-04-04, CS:  Record composed message context_type based on user's selection in $('#msg_compose_frm').ajaxSubmit
 2024-11-12, CS:  Simplify remove unlock confirmation steps
 2025-01-15, CS:  Add warning for unlocked a REL/OBS/WDRN/POLC entry
@@ -85,6 +86,7 @@ var MsgingMod = {
     sPdbId: "[PDBID]",
     sAccessionIdString: "[ACCESSION_ID_STRING]",
     sAccessionIdStringEmRel: "[ACCESSION_ID_STRING_EM_REL]",
+    sHasHave: "has ",
     sSessionPathPrefix: SESS_PATH_PREFIX,
     sFileSource: FILE_SOURCE,
     //sAnnotator : ANNOTATOR,
@@ -894,6 +896,7 @@ function getMsgTemplates() {
 
             MsgingMod.sAccessionIdString = $("#accession_ids").text();
             MsgingMod.sAccessionIdStringEmRel = $("#accession_ids_em_rel").text();
+            MsgingMod.sHasHave = $("#has_have").text() || "has ";
             MsgingMod.sPdbId = $("#pdb_id").text();
             MsgingMod.sDefaultMsgType = $("#default_msg_tmplt").text();
             $("#new_msg_menu").removeClass("disabled").addClass("hoveractivate");
@@ -2186,7 +2189,7 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'system-unlocked') {
         $('#msg_compose_subject').val('System Unlocked');
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'withdrawn') {
-        $('#msg_compose_subject').val(MsgingMod.sAccessionIdString + ' has been withdrawn'); // CS 2022-05-31
+        $('#msg_compose_subject').val(MsgingMod.sAccessionIdString + ' ' + MsgingMod.sHasHave + 'been withdrawn'); // DAOTHER-10451
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'maponly-authstatus-em') {
         $('#msg_compose_subject').val('Annotation of your ' + MsgingMod.sAccessionIdString);
     } else if (MsgingMod.sCrrntContentType != "notes") {
