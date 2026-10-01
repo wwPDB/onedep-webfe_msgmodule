@@ -16,6 +16,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 					replying to message opened in a child window.
 2015-03-02, RPS: Updates per introduction of sanity check safeguards on writes to messaging cif data files.
 2015-05-06, RPS: Updates per updates to jQuery 2.1.3, and associated javascript plugin updates.
+2026-10-01, DAOTHER-10577: Prefill Reply with the letter sign-off (name and wwPDB Biocuration Staff)
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -599,6 +600,17 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
             resetTextArea(tmpltStyle);
         } else {
             $('#msg_compose_body').val("");
+            // DAOTHER-10577: Reply in the message window. Drafts overwrite this afterwards.
+            if (parentMsgId && (typeof(parentMsgId) != "undefined") && MsgingMod.sCrrntContentType != "notes") {
+                var replySig = $("#msg_compose_body_tmplt_reply").val();
+                if (replySig) {
+                    $('#msg_compose_body').val(replySig);
+                    var replyBody = document.getElementById("msg_compose_body");
+                    if (replyBody && typeof replyBody.setSelectionRange === "function") {
+                        replyBody.setSelectionRange(0, 0);
+                    }
+                }
+            }
         }
         confirmAvailFiles();
     }
