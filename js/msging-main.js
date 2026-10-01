@@ -74,6 +74,7 @@ JavaScript supporting wwPDB Messaging Module web interface
 2024-11-12, CS:  Simplify remove unlock confirmation steps
 2025-01-15, CS:  Add warning for unlocked a REL/OBS/WDRN/POLC entry
 2025-05-23, CS:  Add more tag handling on i_clear_tags and c_clear_action
+2026-10-01, DAOTHER-10577: Prefill Reply with the letter sign-off (name and wwPDB Biocuration Staff)
 *************************************************************************************************************/
 //"MsgingMod" namespacing for any globals
 var MsgingMod = {
@@ -2540,9 +2541,24 @@ function getMsgDict(msgId, opts) {
 
                         var sSubject = typeof opts.msg_prefix !== "undefined" ? opts.msg_prefix + oMsg.message_subject : (typeof opts.msg_subject !== "undefined" ? opts.msg_subject : "[SUBJECT PLACHEHOLDER]");
                         var sDraftMsgText = typeof opts.msg_text !== "undefined" ? opts.msg_text : "";
+                        var bReply = typeof opts.msg_prefix !== "undefined";
                         opts.callback(sSubject, oMsg.message_id, oMsg.message_text, oMsg.sender, oMsg.timestamp, undefined);
 
+                        // DAOTHER-10577: Reply has no draft text. Prefill the letter-style sign-off.
+                        if (bReply && sDraftMsgText.length === 0 && MsgingMod.sCrrntContentType != "notes") {
+                            var replySig = $("#msg_compose_body_tmplt_reply").val();
+                            if (replySig) {
+                                sDraftMsgText = replySig;
+                            }
+                        }
                         $('#msg_compose_body').val(sDraftMsgText);
+                        if (bReply && sDraftMsgText.length > 0) {
+                            var replyBody = document.getElementById("msg_compose_body");
+                            if (replyBody && typeof replyBody.setSelectionRange === "function") {
+                                replyBody.setSelectionRange(0, 0);
+                            }
+                            $('#msg_compose_body').scrollTop(0);
+                        }
 
                     } else if (opts.context === "propagate") {
 
