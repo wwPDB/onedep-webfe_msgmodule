@@ -2187,6 +2187,10 @@ function composeMsg(msgSubject, parentMsgId, parentMsg, parentMsgSnder, parentMs
         $('#msg_compose_subject').val('Release of ' + sReleasedIDs);
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'reminder') {
         $('#msg_compose_subject').val('Still awaiting feedback for ' + MsgingMod.sAccessionIdString);
+    } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'extension-3mo') {
+        $('#msg_compose_subject').val('Hold period extended by three months for ' + MsgingMod.sAccessionIdString);
+    } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'extension-6mo') {
+        $('#msg_compose_subject').val('Hold period extended by six months for ' + MsgingMod.sAccessionIdString);
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'system-unlocked') {
         $('#msg_compose_subject').val('System Unlocked');
     } else if (typeof(tmpltStyle) != "undefined" && tmpltStyle == 'withdrawn') {
@@ -2715,7 +2719,7 @@ function submitNewMsg(sendStatusToUse, msgCompose) {
                 "value": MsgingMod.sCrrntCmpsMsgTmplt
             });
 	    //context_type recorded based on users' selection of from message compose drop-down list, namely:
-	    //default,vldtn,approval-expl,approval-impl,reminder,release-publ,release-nopubl,system-unlocked,withdrawn
+	    //default,vldtn,approval-expl,approval-impl,reminder,extension-3mo,extension-6mo,release-publ,release-nopubl,system-unlocked,withdrawn
 	    formData.push({
 		"name": "context_value",
 		"value": ""
