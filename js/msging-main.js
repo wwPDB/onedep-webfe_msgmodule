@@ -663,6 +663,13 @@ $(document).ready(function() {
             MsgingMod.bNewDraftContext = false;
         }
         var tmpltStyle = ($(this).attr('id').split("_"))[1];
+        // Rebuild the extension letters from the model just saved in the status module.
+        if (tmpltStyle === "extension-3mo" || tmpltStyle === "extension-6mo") {
+            getMsgTemplates(function() {
+                composeMsg(undefined, undefined, undefined, undefined, undefined, tmpltStyle);
+            }, true);
+            return;
+        }
         composeMsg(undefined, undefined, undefined, undefined, undefined, tmpltStyle);
     });
 
@@ -870,13 +877,16 @@ $(document).ready(function() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////BEGIN: FUNCTION DEFINITIONS /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getMsgTemplates() {
+function getMsgTemplates(onReady, quiet) {
     //submit ajax call to get starter template that will ultimately be populated with data
+    // quiet is set when an extension letter is opened, so the letters are rebuilt
+    // from the hold date saved in the status module without repeating the load prompt.
     $('#hlprfrm').ajaxSubmit({
         url: MsgingMod.URL.GET_MSG_TMPLTS,
         clearForm: false,
         dataType: 'json',
         success: function(jsonData) {
+            $('#msg_tmplt_block').remove();
             $('#msg_compose_frm').after(jsonData.html); //populate target div with markup representing the "skeleton" starter table
 
             if ('status_code' in jsonData) {
@@ -888,7 +898,7 @@ function getMsgTemplates() {
 
             MsgingMod.bEmMapOnly = ($("#maponly").text() === "true") ? true : false;
             $('#msg_compose_input_em_map_only').val($("#maponly").text());
-            if (MsgingMod.bEmMapOnly) {
+            if (MsgingMod.bEmMapOnly && $('#li_maponly-authstatus-em').length === 0) {
                 $('#cmps_default').parent().after('<li id="li_maponly-authstatus-em"><a href="#" class="compose" id="cmps_maponly-authstatus-em">EM Map-Only Post-Annotation</a></li>');
             }
 
@@ -900,20 +910,30 @@ function getMsgTemplates() {
             MsgingMod.sHasHave = $("#has_have").text() || "has ";
             MsgingMod.sPdbId = $("#pdb_id").text();
             MsgingMod.sDefaultMsgType = $("#default_msg_tmplt").text();
-            $("#new_msg_menu").removeClass("disabled").addClass("hoveractivate");
-            //$("#new_msg_menu").addClass("hoveractivate");
-            $("#new_msg_menu_link").removeClass("disabled");
-            $("#tmplts_loading_prompt_a").removeClass("bg-warning").addClass("bg-success").html("<strong>Message templates now loaded</strong>");
-            $("#tmplts_loading_prompt").fadeOut(4000, function() {
-                $("#tmplts_loading_prompt").addClass("hidden");
-            });
-            // here if in "embedded view" of added annotation, we have the UI automatically launch the "Compose" dialog if indicated by AUTO_LAUNCH_COMPOSE global var
-            if (MsgingMod.bEmbeddedView == true && MsgingMod.sCrrntContentType == "msgs" && AUTO_LAUNCH_COMPOSE == true) {
-                composeMsg(undefined, undefined, undefined, undefined, undefined, MsgingMod.sDefaultMsgType);
-                AUTO_LAUNCH_COMPOSE = false;
+            if (!quiet) {
+                $("#new_msg_menu").removeClass("disabled").addClass("hoveractivate");
+                //$("#new_msg_menu").addClass("hoveractivate");
+                $("#new_msg_menu_link").removeClass("disabled");
+                $("#tmplts_loading_prompt_a").removeClass("bg-warning").addClass("bg-success").html("<strong>Message templates now loaded</strong>");
+                $("#tmplts_loading_prompt").fadeOut(4000, function() {
+                    $("#tmplts_loading_prompt").addClass("hidden");
+                });
+                // here if in "embedded view" of added annotation, we have the UI automatically launch the "Compose" dialog if indicated by AUTO_LAUNCH_COMPOSE global var
+                if (MsgingMod.bEmbeddedView == true && MsgingMod.sCrrntContentType == "msgs" && AUTO_LAUNCH_COMPOSE == true) {
+                    composeMsg(undefined, undefined, undefined, undefined, undefined, MsgingMod.sDefaultMsgType);
+                    AUTO_LAUNCH_COMPOSE = false;
+                }
+            }
+            if (typeof onReady === "function") {
+                onReady();
             }
             //$("#tmplts_loading_prompt").hide();
 
+        },
+        error: function() {
+            if (typeof onReady === "function") {
+                onReady();
+            }
         }
     });
     return false;
